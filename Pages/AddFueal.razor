@@ -113,12 +113,11 @@
 
                 <div class="fuel-input-wrapper fuel-input-with-unit">
 
-                    <input type="number"
-                           step="0.01"
-                           min="0"
+                    <input type="text"
+                           inputmode="decimal"
                            class="fuel-input"
-                           @bind="liters"
-                           @bind:event="oninput"
+                           value="@litersInput"
+                           @oninput="OnLitersInput"
                            placeholder="T.ex. 42,73" />
 
                     <span class="fuel-input-unit">
@@ -149,12 +148,11 @@
 
                 <div class="fuel-input-wrapper fuel-input-with-unit">
 
-                    <input type="number"
-                           step="0.01"
-                           min="0"
+                    <input type="text"
+                           inputmode="decimal"
                            class="fuel-input"
-                           @bind="totalCost"
-                           @bind:event="oninput"
+                           value="@totalCostInput"
+                           @oninput="OnTotalCostInput"
                            placeholder="T.ex. 812,46" />
 
                     <span class="fuel-input-unit">
@@ -284,6 +282,56 @@
 
     private decimal? liters;
     private decimal? totalCost;
+    private string litersInput = "";
+    private string totalCostInput = "";
+
+    private void OnLitersInput(ChangeEventArgs e)
+    {
+        var input = e.Value?.ToString() ?? "";
+
+        litersInput = new string(input
+            .Where(c => char.IsDigit(c) || c == ',' || c == '.')
+            .ToArray());
+
+        var value = litersInput.Replace(',', '.');
+
+        if (decimal.TryParse(
+            value,
+            System.Globalization.NumberStyles.Number,
+            System.Globalization.CultureInfo.InvariantCulture,
+            out var parsed))
+        {
+            liters = parsed;
+        }
+        else
+        {
+            liters = null;
+        }
+    }
+
+    private void OnTotalCostInput(ChangeEventArgs e)
+    {
+        var input = e.Value?.ToString() ?? "";
+
+        totalCostInput = new string(input
+            .Where(c => char.IsDigit(c) || c == ',' || c == '.')
+            .ToArray());
+
+        var value = totalCostInput.Replace(',', '.');
+
+        if (decimal.TryParse(
+            value,
+            System.Globalization.NumberStyles.Number,
+            System.Globalization.CultureInfo.InvariantCulture,
+            out var parsed))
+        {
+            totalCost = parsed;
+        }
+        else
+        {
+            totalCost = null;
+        }
+    }
 
     private DateTime date = DateTime.Today;
 
@@ -362,6 +410,8 @@
 
         liters = null;
         totalCost = null;
+        litersInput = "";
+        totalCostInput = "";
 
         saved = true;
     }

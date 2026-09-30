@@ -3698,26 +3698,7 @@ a.bottom-nav-item {
     transition: color 180ms ease, transform 160ms cubic-bezier(.2,.8,.2,1), background 180ms ease;
 }
 
-    .bottom-nav-item::after {
-        content: "";
-        position: absolute;
-        left: 50%;
-        bottom: 5px;
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: linear-gradient( 135deg, #8b5cf6, #22d3ee );
-        box-shadow: 0 0 11px rgba(139,92,246,0.55);
-        opacity: 0;
-        transform: translateX(-50%) translateY(5px) scale(0);
-        transition: opacity 180ms ease, transform 220ms cubic-bezier(.18,.89,.32,1.4);
-    }
-
-    .bottom-nav-item.active::after {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0) scale(1);
-    }
-
+    
     .bottom-nav-item:active {
         transform: scale(0.91);
     }
@@ -4823,4 +4804,25 @@ h3,
 .fuel-section-label,
 .fuel-stat-label {
     letter-spacing: 0.04em;
+}
+
+/* Håll datumfältet innanför kortet på mobil */
+.fuel-input-wrapper {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.fuel-date-input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* Säkerställ att glow aldrig går utanför statistik-korten på iPhone */
+.fuel-stat-card {
+    overflow: hidden !important;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
