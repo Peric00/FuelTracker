@@ -1,0 +1,368 @@
+﻿@page "/add-fuel"
+@using FuelTracker.Models
+@using FuelTracker.Services
+@inject StorageService Storage
+
+<PageTitle>Ny tankning</PageTitle>
+
+<div class="fuel-form-page">
+
+    <BackButton />
+
+    <!-- Header -->
+    <header class="fuel-page-header">
+
+        <div class="fuel-page-header-icon fuel-page-header-purple">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
+                <path d="M7 6h5v5H7z" />
+                <path d="M15 8h2l3 3v6a2 2 0 0 1-4 0" />
+            </svg>
+        </div>
+
+        <div>
+            <div class="fuel-eyebrow">
+                TANKNING
+            </div>
+
+            <h1>Ny tankning</h1>
+
+            <p>
+                Fyll i uppgifterna från ditt senaste stopp.
+            </p>
+        </div>
+
+    </header>
+
+    @if (cars.Count == 0)
+    {
+        <div class="fuel-form-warning">
+
+            <div class="fuel-form-warning-icon">
+                !
+            </div>
+
+            <div>
+                <strong>Ingen bil tillagd</strong>
+
+                <p>
+                    Du behöver lägga till en bil innan du kan registrera en tankning.
+                </p>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <!-- Bil -->
+        <section class="fuel-form-card">
+
+            <div class="fuel-field">
+
+                <label>
+                    <span class="fuel-field-icon fuel-field-purple">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 11 1.5-4h11L19 11" />
+                            <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
+                            <circle cx="7" cy="16" r="1" />
+                            <circle cx="17" cy="16" r="1" />
+                        </svg>
+                    </span>
+
+                    <span>
+                        Bil
+                        <small>Vilken bil tankade du?</small>
+                    </span>
+                </label>
+
+                <div class="fuel-input-wrapper">
+                    <select class="fuel-input"
+                            @bind="selectedCarId">
+
+                        <option value="">
+                            Välj bil
+                        </option>
+
+                        @foreach (var car in cars)
+                        {
+                            <option value="@car.Id">
+                                @car.Name
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Liter -->
+            <div class="fuel-field">
+
+                <label>
+                    <span class="fuel-field-icon fuel-field-cyan">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" />
+                        </svg>
+                    </span>
+
+                    <span>
+                        Liter
+                        <small>Ange gärna exakt mängd</small>
+                    </span>
+                </label>
+
+                <div class="fuel-input-wrapper fuel-input-with-unit">
+
+                    <input type="number"
+                           step="0.01"
+                           min="0"
+                           class="fuel-input"
+                           @bind="liters"
+                           @bind:event="oninput"
+                           placeholder="T.ex. 42,73" />
+
+                    <span class="fuel-input-unit">
+                        L
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Kostnad -->
+            <div class="fuel-field">
+
+                <label>
+                    <span class="fuel-field-icon fuel-field-orange">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M15.5 8.5c-.8-.7-1.8-1-3-1-1.7 0-3 .8-3 2s1 1.8 3 2.2 3 1 3 2.3-1.3 2.2-3.2 2.2c-1.2 0-2.4-.4-3.3-1.2" />
+                            <path d="M12 5.5v13" />
+                        </svg>
+                    </span>
+
+                    <span>
+                        Kostnad
+                        <small>Ange det exakta beloppet</small>
+                    </span>
+                </label>
+
+                <div class="fuel-input-wrapper fuel-input-with-unit">
+
+                    <input type="number"
+                           step="0.01"
+                           min="0"
+                           class="fuel-input"
+                           @bind="totalCost"
+                           @bind:event="oninput"
+                           placeholder="T.ex. 812,46" />
+
+                    <span class="fuel-input-unit">
+                        kr
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Datum -->
+            <div class="fuel-field fuel-field-last">
+
+                <label>
+                    <span class="fuel-field-icon fuel-field-lime">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="5" width="18" height="16" rx="2" />
+                            <path d="M8 3v4" />
+                            <path d="M16 3v4" />
+                            <path d="M3 10h18" />
+                        </svg>
+                    </span>
+
+                    <span>
+                        Datum
+                        <small>När tankade du?</small>
+                    </span>
+                </label>
+
+                <div class="fuel-input-wrapper">
+                    <input type="date"
+                           class="fuel-input fuel-date-input"
+                           @bind="date" />
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Live pris -->
+        @if (liters.HasValue &&
+             totalCost.HasValue &&
+             liters.Value > 0 &&
+             totalCost.Value > 0)
+        {
+            <div class="fuel-live-price">
+
+                <div class="fuel-live-price-left">
+
+                    <div class="fuel-live-price-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 18 9 13l4 3 7-9" />
+                            <path d="M15 7h5v5" />
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span>BERÄKNAT PRIS</span>
+                        <small>Utifrån liter och kostnad</small>
+                    </div>
+
+                </div>
+
+                <div class="fuel-live-price-value">
+                    @PricePerLiter.ToString("0.00")
+                    <small>kr/L</small>
+                </div>
+
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="fuel-form-error">
+                @errorMessage
+            </div>
+        }
+
+        <!-- Spara -->
+        <button class="fuel-save-button"
+                @onclick="SaveFuelEntry">
+
+            <span class="fuel-save-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
+                    <path d="M7 6h5v5H7z" />
+                    <path d="M15 8h2l3 3v6a2 2 0 0 1-4 0" />
+                </svg>
+            </span>
+
+            <span>
+                Spara tankning
+            </span>
+
+            <span class="fuel-save-arrow">
+                →
+            </span>
+
+        </button>
+
+        @if (saved)
+        {
+            <div class="fuel-saved-message">
+
+                <div class="fuel-saved-check">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m5 12 4 4L19 6" />
+                    </svg>
+                </div>
+
+                <div>
+                    <strong>Tankning sparad!</strong>
+                    <span>Din statistik har uppdaterats.</span>
+                </div>
+
+            </div>
+        }
+    }
+
+</div>
+
+@code {
+    private List<Car> cars = new();
+    private List<FuelEntry> fuelEntries = new();
+
+    private Guid? selectedCarId;
+
+    private decimal? liters;
+    private decimal? totalCost;
+
+    private DateTime date = DateTime.Today;
+
+    private bool saved = false;
+    private string errorMessage = "";
+
+    private decimal PricePerLiter =>
+        liters.HasValue &&
+        totalCost.HasValue &&
+        liters.Value > 0
+            ? totalCost.Value / liters.Value
+            : 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cars =
+            await Storage.LoadAsync<List<Car>>("cars")
+            ?? new List<Car>();
+
+        fuelEntries =
+            await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
+            ?? new List<FuelEntry>();
+
+        if (cars.Count == 1)
+        {
+            selectedCarId = cars[0].Id;
+        }
+    }
+
+    private async Task SaveFuelEntry()
+    {
+        saved = false;
+        errorMessage = "";
+
+        if (selectedCarId == null)
+        {
+            errorMessage = "Välj vilken bil tankningen gäller.";
+            return;
+        }
+
+        if (!liters.HasValue || liters.Value <= 0)
+        {
+            errorMessage = "Ange hur många liter du tankade.";
+            return;
+        }
+
+        if (!totalCost.HasValue || totalCost.Value <= 0)
+        {
+            errorMessage = "Ange vad tankningen kostade.";
+            return;
+        }
+
+        var selectedCar =
+            cars.FirstOrDefault(c => c.Id == selectedCarId.Value);
+
+        if (selectedCar == null)
+        {
+            errorMessage = "Den valda bilen kunde inte hittas.";
+            return;
+        }
+
+        var entry = new FuelEntry
+        {
+            CarId = selectedCar.Id,
+            CarName = selectedCar.Name,
+            Liters = liters.Value,
+            TotalCost = totalCost.Value,
+            Date = date
+        };
+
+        fuelEntries.Add(entry);
+
+        await Storage.SaveAsync(
+            "fuelEntries",
+            fuelEntries);
+
+        liters = null;
+        totalCost = null;
+
+        saved = true;
+    }
+}

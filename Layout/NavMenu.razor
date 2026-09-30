@@ -1,39 +1,64 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">FuelTracker</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿<nav class="bottom-nav">
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    <NavLink class="bottom-nav-item"
+             href=""
+             Match="NavLinkMatch.All">
 
-@code {
-    private bool collapseNavMenu = true;
+        <span class="bottom-nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m3 11 9-8 9 8" />
+                <path d="M5 10v10h14V10" />
+                <path d="M9 20v-6h6v6" />
+            </svg>
+        </span>
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+        <span>Hem</span>
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
+    </NavLink>
+
+    <NavLink class="bottom-nav-item"
+             href="add-fuel">
+
+        <span class="bottom-nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
+                <path d="M7 6h5v5H7z" />
+                <path d="M15 8h2l3 3v6a2 2 0 0 1-4 0" />
+            </svg>
+        </span>
+
+        <span>Tankning</span>
+
+    </NavLink>
+
+    <NavLink class="bottom-nav-item"
+             href="history">
+
+        <span class="bottom-nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" />
+            </svg>
+        </span>
+
+        <span>Historik</span>
+
+    </NavLink>
+
+    <NavLink class="bottom-nav-item"
+             href="cars">
+
+        <span class="bottom-nav-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m5 11 1.5-4h11L19 11" />
+                <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
+                <circle cx="7" cy="16" r="1" />
+                <circle cx="17" cy="16" r="1" />
+            </svg>
+        </span>
+
+        <span>Bilar</span>
+
+    </NavLink>
+
+</nav>

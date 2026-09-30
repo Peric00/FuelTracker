@@ -1,0 +1,457 @@
+﻿@page "/backup"
+@using FuelTracker.Models
+@using FuelTracker.Services
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Forms
+@inject StorageService Storage
+@inject IJSRuntime JS
+
+<PageTitle>Backup & återställ</PageTitle>
+
+<div class="fuel-backup-page">
+
+    <BackButton />
+
+    <!-- Header -->
+    <header class="fuel-page-header">
+
+        <div class="fuel-page-header-icon fuel-backup-header-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 5a2 2 0 0 1 2-2h8l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z" />
+                <path d="M8 3v6h7V3" />
+                <path d="M9 17h6" />
+            </svg>
+        </div>
+
+        <div>
+            <div class="fuel-eyebrow">
+                DIN DATA
+            </div>
+
+            <h1>Backup & återställ</h1>
+
+            <p>
+                Spara dina bilar och tankningar säkert.
+            </p>
+        </div>
+
+    </header>
+
+
+    <!-- INFO -->
+    <div class="fuel-backup-info">
+
+        <div class="fuel-backup-info-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10Z" />
+                <path d="m9 12 2 2 4-5" />
+            </svg>
+        </div>
+
+        <div>
+            <strong>Din data stannar hos dig</strong>
+
+            <p>
+                Backupfilen innehåller dina bilar och tankningar
+                och kan användas för att flytta FuelTracker till en annan enhet.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- EXPORTERA -->
+    <section class="fuel-backup-card fuel-backup-export">
+
+        <div class="fuel-backup-card-glow"></div>
+
+        <div class="fuel-backup-card-header">
+
+            <div class="fuel-backup-action-icon fuel-backup-download-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3v12" />
+                    <path d="m7 10 5 5 5-5" />
+                    <path d="M5 21h14" />
+                </svg>
+            </div>
+
+            <div>
+                <div class="fuel-eyebrow">
+                    SPARA
+                </div>
+
+                <h2>Exportera backup</h2>
+            </div>
+
+        </div>
+
+        <p class="fuel-backup-description">
+            Skapa en JSON-fil med alla dina bilar och tankningar.
+            Spara filen på en säker plats så att du kan återställa
+            informationen senare.
+        </p>
+
+        <div class="fuel-backup-contains">
+
+            <div>
+                <span class="fuel-backup-dot fuel-backup-dot-purple"></span>
+                Bilar
+            </div>
+
+            <div>
+                <span class="fuel-backup-dot fuel-backup-dot-cyan"></span>
+                Tankningar
+            </div>
+
+        </div>
+
+        <button class="fuel-backup-export-button"
+                @onclick="ExportBackup">
+
+            <span class="fuel-backup-button-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3v12" />
+                    <path d="m7 10 5 5 5-5" />
+                    <path d="M5 21h14" />
+                </svg>
+            </span>
+
+            <span>Exportera backup</span>
+
+            <span class="fuel-backup-button-arrow">
+                →
+            </span>
+
+        </button>
+
+    </section>
+
+
+    <!-- ÅTERSTÄLL -->
+    <section class="fuel-backup-card fuel-backup-restore">
+
+        <div class="fuel-backup-card-glow"></div>
+
+        <div class="fuel-backup-card-header">
+
+            <div class="fuel-backup-action-icon fuel-backup-upload-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 16V4" />
+                    <path d="m7 9 5-5 5 5" />
+                    <path d="M5 21h14" />
+                </svg>
+            </div>
+
+            <div>
+                <div class="fuel-eyebrow">
+                    ÅTERSTÄLL
+                </div>
+
+                <h2>Återställ backup</h2>
+            </div>
+
+        </div>
+
+        <p class="fuel-backup-description">
+            Välj en tidigare FuelTracker-backup för att återställa
+            dina sparade bilar och tankningar.
+        </p>
+
+        <div class="fuel-backup-warning">
+
+            <div class="fuel-backup-warning-icon">
+                !
+            </div>
+
+            <p>
+                En återställning ersätter dina nuvarande bilar och tankningar.
+                Du får bekräfta innan något skrivs över.
+            </p>
+
+        </div>
+
+        <label class="fuel-backup-file-area">
+
+            <div class="fuel-backup-file-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 5a2 2 0 0 1 2-2h8l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z" />
+                    <path d="M15 3v5h5" />
+                    <path d="M9 14h6" />
+                    <path d="M12 11v6" />
+                </svg>
+            </div>
+
+            <div class="fuel-backup-file-text">
+                <strong>Välj backupfil</strong>
+                <span>FuelTracker .json</span>
+            </div>
+
+            <InputFile OnChange="ReadBackup"
+                       accept=".json,application/json"
+                       class="fuel-backup-file-input" />
+
+        </label>
+
+
+        @if (pendingBackup != null)
+        {
+            <div class="fuel-restore-confirm">
+
+                <div class="fuel-restore-confirm-top">
+
+                    <div class="fuel-restore-confirm-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10Z" />
+                            <path d="M12 8v5" />
+                            <path d="M12 17h.01" />
+                        </svg>
+                    </div>
+
+                    <div>
+                        <strong>Är du säker?</strong>
+
+                        <p>
+                            Den valda backupen innehåller
+                            @pendingBackup.Cars.Count bilar och
+                            @pendingBackup.FuelEntries.Count tankningar.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="fuel-restore-summary">
+
+                    <div>
+                        <span>BILAR</span>
+                        <strong>@pendingBackup.Cars.Count</strong>
+                    </div>
+
+                    <div></div>
+
+                    <div>
+                        <span>TANKNINGAR</span>
+                        <strong>@pendingBackup.FuelEntries.Count</strong>
+                    </div>
+
+                </div>
+
+                <div class="fuel-restore-actions">
+
+                    <button class="fuel-restore-confirm-button"
+                            @onclick="ConfirmRestore">
+                        Ja, återställ
+                    </button>
+
+                    <button class="fuel-restore-cancel-button"
+                            @onclick="CancelRestore">
+                        Avbryt
+                    </button>
+
+                </div>
+
+            </div>
+        }
+
+    </section>
+
+
+    <!-- SUCCESS -->
+    @if (!string.IsNullOrWhiteSpace(successMessage))
+    {
+        <div class="fuel-backup-success">
+
+            <div class="fuel-backup-success-check">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m5 12 4 4L19 6" />
+                </svg>
+            </div>
+
+            <div>
+                <strong>Klart!</strong>
+                <span>@successMessage</span>
+            </div>
+
+        </div>
+    }
+
+
+    <!-- ERROR -->
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="fuel-backup-error">
+            @errorMessage
+        </div>
+    }
+
+</div>
+
+
+@code {
+
+    private string? successMessage;
+    private string? errorMessage;
+
+    private FuelBackup? pendingBackup;
+
+
+    private async Task ExportBackup()
+    {
+        successMessage = null;
+        errorMessage = null;
+
+        try
+        {
+            var cars =
+                await Storage.LoadAsync<List<Car>>("cars")
+                ?? new List<Car>();
+
+            var fuelEntries =
+                await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
+                ?? new List<FuelEntry>();
+
+            var backup = new FuelBackup
+            {
+                CreatedAt = DateTime.Now,
+                Cars = cars,
+                FuelEntries = fuelEntries
+            };
+
+            var json =
+                JsonSerializer.Serialize(
+                    backup,
+                    new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    });
+
+            var fileName =
+                $"FuelTracker-backup-{DateTime.Now:yyyy-MM-dd}.json";
+
+            await JS.InvokeVoidAsync(
+                "downloadFuelBackup",
+                fileName,
+                json);
+
+            successMessage =
+                "Backupen har skapats och laddats ner.";
+        }
+        catch
+        {
+            errorMessage =
+                "Det gick inte att skapa backupen.";
+        }
+    }
+
+
+    private async Task ReadBackup(InputFileChangeEventArgs e)
+    {
+        successMessage = null;
+        errorMessage = null;
+        pendingBackup = null;
+
+        try
+        {
+            var file = e.File;
+
+            if (!file.Name.EndsWith(
+                    ".json",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                errorMessage =
+                    "Välj en giltig FuelTracker-backup (.json).";
+
+                return;
+            }
+
+            const long maxFileSize =
+                5 * 1024 * 1024;
+
+            if (file.Size > maxFileSize)
+            {
+                errorMessage =
+                    "Backupfilen är för stor.";
+
+                return;
+            }
+
+            using var stream =
+                file.OpenReadStream(maxFileSize);
+
+            var backup =
+                await JsonSerializer.DeserializeAsync<FuelBackup>(
+                    stream,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+            if (backup == null ||
+                backup.Cars == null ||
+                backup.FuelEntries == null)
+            {
+                errorMessage =
+                    "Filen verkar inte vara en giltig FuelTracker-backup.";
+
+                return;
+            }
+
+            pendingBackup = backup;
+        }
+        catch (JsonException)
+        {
+            errorMessage =
+                "Backupfilen kunde inte läsas. Kontrollera att du valt rätt fil.";
+        }
+        catch
+        {
+            errorMessage =
+                "Något gick fel när backupfilen skulle läsas.";
+        }
+    }
+
+
+    private async Task ConfirmRestore()
+    {
+        if (pendingBackup == null)
+            return;
+
+        successMessage = null;
+        errorMessage = null;
+
+        try
+        {
+            var carCount =
+                pendingBackup.Cars.Count;
+
+            var fuelEntryCount =
+                pendingBackup.FuelEntries.Count;
+
+            await Storage.SaveAsync(
+                "cars",
+                pendingBackup.Cars);
+
+            await Storage.SaveAsync(
+                "fuelEntries",
+                pendingBackup.FuelEntries);
+
+            pendingBackup = null;
+
+            successMessage =
+                $"Backup återställd! {carCount} bilar och " +
+                $"{fuelEntryCount} tankningar återställdes.";
+        }
+        catch
+        {
+            errorMessage =
+                "Något gick fel när backupen skulle återställas.";
+        }
+    }
+
+
+    private void CancelRestore()
+    {
+        pendingBackup = null;
+        successMessage = null;
+        errorMessage = null;
+    }
+}

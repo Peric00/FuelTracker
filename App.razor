@@ -1,6 +1,71 @@
-﻿<Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+﻿<div class="fuel-startup-splash @(showStartupSplash ? "" : "fuel-startup-splash-hide")">
+
+    <div class="fuel-startup-content">
+
+        <div class="fuel-startup-logo">
+
+            <div class="fuel-startup-logo-glow"></div>
+
+            <div class="fuel-startup-pump">
+
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
+                    <path d="M7 6h5v5H7z" />
+                    <path d="M15 8h2l3 3v6a2 2 0 0 1-4 0" />
+                </svg>
+
+                <div class="fuel-startup-pump-shine"></div>
+
+            </div>
+
+        </div>
+
+        <div class="fuel-startup-brand">
+            <span>Fuel</span><strong>Tracker</strong>
+        </div>
+
+        <div class="fuel-startup-tagline">
+            FUEL. TRACK. DRIVE.
+        </div>
+
+        <div class="fuel-startup-loader">
+            <div class="fuel-startup-loader-fill"></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<Router AppAssembly="@typeof(App).Assembly"
+        NotFoundPage="typeof(Pages.NotFound)">
+
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+
+        <RouteView RouteData="@routeData"
+                   DefaultLayout="@typeof(MainLayout)" />
+
+        <FocusOnNavigate RouteData="@routeData"
+                         Selector="h1" />
+
     </Found>
+
 </Router>
+
+
+@code {
+
+    private bool showStartupSplash = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        await Task.Delay(1400);
+
+        showStartupSplash = false;
+
+        StateHasChanged();
+    }
+}

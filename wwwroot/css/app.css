@@ -113,3 +113,4714 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* =========================
+   FuelTracker app layout
+   ========================= */
+
+.app-layout {
+    min-height: 100vh;
+}
+
+.app-content {
+    width: 100%;
+    padding: 1rem;
+    padding-bottom: 6rem;
+}
+
+
+/* =========================
+   Bottom navigation
+   ========================= */
+
+.bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+    min-height: 64px;
+    background: white;
+    border-top: 1px solid #dcdcdc;
+    z-index: 1000;
+}
+
+.bottom-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 64px;
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+    .bottom-nav-item.active {
+        font-weight: 600;
+    }
+
+
+/* =========================
+   Mobile
+   ========================= */
+
+@media (max-width: 767px) {
+
+    .app-content {
+        padding: 1rem;
+        padding-bottom: 6rem;
+    }
+
+    .home-page,
+    .fuel-history {
+        width: 100%;
+    }
+}
+
+
+/* =========================
+   Larger screens
+   ========================= */
+
+@media (min-width: 768px) {
+
+    .app-content {
+        padding: 2rem;
+        padding-bottom: 6rem;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER DESIGN SYSTEM V1
+   ========================================================= */
+
+:root {
+    --fuel-bg: #080b18;
+    --fuel-bg-soft: #0e1225;
+    --fuel-surface: rgba(20, 25, 48, 0.88);
+    --fuel-surface-strong: #151a32;
+    --fuel-text: #f7f8ff;
+    --fuel-muted: #9299b5;
+    --fuel-purple: #8b5cf6;
+    --fuel-purple-bright: #a855f7;
+    --fuel-cyan: #22d3ee;
+    --fuel-blue: #3b82f6;
+    --fuel-lime: #a3e635;
+    --fuel-orange: #fb923c;
+    --fuel-pink: #ec4899;
+    --fuel-danger: #fb5b68;
+    --fuel-border: rgba(255, 255, 255, 0.08);
+    --fuel-radius: 22px;
+    --fuel-radius-small: 16px;
+}
+
+
+/* =========================================================
+   APP BASE
+   ========================================================= */
+
+html,
+body {
+    background: radial-gradient( circle at 10% -10%, rgba(139, 92, 246, 0.20), transparent 34% ), radial-gradient( circle at 95% 20%, rgba(34, 211, 238, 0.10), transparent 28% ), var(--fuel-bg);
+    color: var(--fuel-text);
+}
+
+body {
+    min-height: 100vh;
+}
+
+.app-layout {
+    min-height: 100vh;
+    background: transparent;
+}
+
+.app-content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.15rem 1rem calc(7rem + env(safe-area-inset-bottom));
+}
+
+.fuel-home {
+    width: 100%;
+}
+
+    .fuel-home button {
+        font-family: inherit;
+    }
+
+    .fuel-home svg,
+    .bottom-nav svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* =========================================================
+   HEADER / BRAND
+   ========================================================= */
+
+.fuel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.fuel-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.fuel-brand-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    color: white;
+    background: linear-gradient( 135deg, var(--fuel-purple), var(--fuel-blue), var(--fuel-cyan) );
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+    transform: rotate(-3deg);
+}
+
+    .fuel-brand-icon svg {
+        width: 25px;
+        height: 25px;
+    }
+
+.fuel-logo {
+    font-size: 1.65rem;
+    font-weight: 850;
+    letter-spacing: -0.055em;
+    color: var(--fuel-text);
+}
+
+    .fuel-logo span {
+        background: linear-gradient( 90deg, var(--fuel-purple-bright), var(--fuel-cyan) );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+.fuel-subtitle {
+    color: var(--fuel-muted);
+    font-size: 0.85rem;
+    margin-top: 0.15rem !important;
+}
+
+.fuel-live-dot {
+    width: 37px;
+    height: 37px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(163, 230, 53, 0.08);
+    border: 1px solid rgba(163, 230, 53, 0.15);
+}
+
+    .fuel-live-dot span {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--fuel-lime);
+        box-shadow: 0 0 0 5px rgba(163, 230, 53, 0.08), 0 0 18px rgba(163, 230, 53, 0.75);
+        animation: fuelPulse 2.2s ease-in-out infinite;
+    }
+
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
+.fuel-section {
+    margin-bottom: 1.7rem;
+}
+
+.fuel-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+    .fuel-section-heading h2 {
+        margin: 0.12rem 0 0;
+        font-size: 1.28rem;
+        font-weight: 750;
+        letter-spacing: -0.035em;
+        color: var(--fuel-text);
+    }
+
+.fuel-eyebrow {
+    color: var(--fuel-muted);
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.fuel-history-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.65rem;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(139, 92, 246, 0.09);
+    color: #bfa7ff;
+    font-size: 0.82rem;
+    font-weight: 650;
+    transition: transform 150ms ease, background 150ms ease;
+}
+
+    .fuel-history-link svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .fuel-history-link:active {
+        transform: scale(0.95);
+    }
+
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.fuel-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.fuel-stat-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 137px;
+    padding: 1rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: linear-gradient( 145deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.055);
+    isolation: isolate;
+}
+
+.fuel-stat-top {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--fuel-muted);
+    font-size: 0.76rem;
+    font-weight: 650;
+}
+
+.fuel-stat-icon {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+}
+
+    .fuel-stat-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+.fuel-stat-purple .fuel-stat-icon {
+    color: #c7b4ff;
+    background: rgba(139, 92, 246, 0.16);
+}
+
+.fuel-stat-cyan .fuel-stat-icon {
+    color: #75e8f8;
+    background: rgba(34, 211, 238, 0.13);
+}
+
+.fuel-stat-number {
+    position: relative;
+    z-index: 2;
+    margin-top: 0.85rem;
+    color: var(--fuel-text);
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 850;
+    letter-spacing: -0.055em;
+}
+
+    .fuel-stat-number small {
+        font-size: 0.72rem;
+        font-weight: 650;
+        color: var(--fuel-muted);
+        letter-spacing: 0;
+    }
+
+.fuel-money {
+    font-size: clamp(1.45rem, 6vw, 2rem);
+}
+
+.fuel-stat-glow {
+    position: absolute;
+    width: 115px;
+    height: 115px;
+    right: -50px;
+    bottom: -65px;
+    border-radius: 50%;
+    filter: blur(3px);
+    z-index: 0;
+}
+
+.fuel-stat-purple .fuel-stat-glow {
+    background: rgba(139, 92, 246, 0.27);
+}
+
+.fuel-stat-cyan .fuel-stat-glow {
+    background: rgba(34, 211, 238, 0.19);
+}
+
+
+/* =========================================================
+   MAIN ACTION
+   ========================================================= */
+
+.fuel-main-action {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem;
+    border: 0;
+    border-radius: var(--fuel-radius);
+    color: white;
+    text-align: left;
+    background: linear-gradient( 105deg, #713df1 0%, #7c4dff 38%, #2563eb 72%, #0891b2 115% );
+    box-shadow: 0 16px 42px rgba(91, 72, 238, 0.32), inset 0 1px 0 rgba(255,255,255,0.24);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+    .fuel-main-action::before {
+        content: "";
+        position: absolute;
+        width: 120px;
+        height: 180px;
+        top: -80px;
+        right: 12%;
+        transform: rotate(28deg);
+        background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.12), transparent );
+        pointer-events: none;
+    }
+
+    .fuel-main-action:active {
+        transform: scale(0.975);
+        box-shadow: 0 8px 25px rgba(91, 72, 238, 0.25);
+    }
+
+.fuel-main-action-icon {
+    flex: 0 0 auto;
+    width: 47px;
+    height: 47px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.13);
+}
+
+    .fuel-main-action-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+.fuel-main-action-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+    .fuel-main-action-text strong {
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .fuel-main-action-text small {
+        margin-top: 0.12rem;
+        color: rgba(255,255,255,0.72);
+        font-size: 0.74rem;
+    }
+
+.fuel-main-action-plus {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.14);
+    font-size: 1.45rem;
+    font-weight: 300;
+}
+
+
+/* =========================================================
+   LATEST FUEL CARD
+   ========================================================= */
+
+.fuel-latest-heading {
+    align-items: center;
+}
+
+.fuel-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.38rem 0.62rem;
+    border-radius: 999px;
+    background: rgba(163, 230, 53, 0.07);
+    border: 1px solid rgba(163, 230, 53, 0.13);
+    color: #b7ed69;
+    font-size: 0.68rem;
+    font-weight: 750;
+}
+
+    .fuel-status-pill span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--fuel-lime);
+        box-shadow: 0 0 9px rgba(163, 230, 53, 0.7);
+    }
+
+.fuel-latest-card {
+    position: relative;
+    overflow: hidden;
+    padding: 1rem;
+    border-radius: var(--fuel-radius);
+    border: 1px solid var(--fuel-border);
+    background: linear-gradient( 145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.045);
+}
+
+.fuel-latest-accent {
+    position: absolute;
+    left: 0;
+    top: 18px;
+    bottom: 18px;
+    width: 3px;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient( var(--fuel-purple), var(--fuel-cyan) );
+    box-shadow: 0 0 16px rgba(139, 92, 246, 0.7);
+}
+
+.fuel-latest-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+}
+
+.fuel-car-info {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+}
+
+.fuel-car-icon {
+    flex: 0 0 auto;
+    width: 41px;
+    height: 41px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: #bca8ff;
+    background: rgba(139, 92, 246, 0.12);
+}
+
+    .fuel-car-icon svg {
+        width: 23px;
+        height: 23px;
+    }
+
+.fuel-car-info h3 {
+    margin: 0;
+    color: var(--fuel-text);
+    font-size: 1rem;
+    font-weight: 780;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fuel-car-info span {
+    display: block;
+    margin-top: 0.12rem;
+    color: var(--fuel-muted);
+    font-size: 0.72rem;
+}
+
+.fuel-price-pill {
+    flex: 0 0 auto;
+    padding: 0.42rem 0.55rem;
+    border-radius: 11px;
+    background: rgba(34, 211, 238, 0.09);
+    border: 1px solid rgba(34, 211, 238, 0.12);
+    color: #7be7f5;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+    .fuel-price-pill small {
+        font-size: 0.6rem;
+        color: #65b8c5;
+    }
+
+.fuel-latest-values {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--fuel-border);
+    border-bottom: 1px solid var(--fuel-border);
+}
+
+    .fuel-latest-values > div:not(.fuel-value-divider) {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .fuel-latest-values span {
+        color: var(--fuel-muted);
+        font-size: 0.67rem;
+    }
+
+    .fuel-latest-values strong {
+        margin-top: 0.15rem;
+        color: var(--fuel-text);
+        font-size: 1.03rem;
+        font-weight: 800;
+    }
+
+        .fuel-latest-values strong small {
+            color: var(--fuel-muted);
+            font-size: 0.65rem;
+        }
+
+.fuel-value-divider {
+    width: 1px;
+    height: 35px;
+    background: var(--fuel-border);
+}
+
+.fuel-delete-link {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.65rem;
+    padding: 0.45rem;
+    border: 0;
+    background: transparent;
+    color: #a0a6bd;
+    font-size: 0.7rem;
+    font-weight: 650;
+    transition: color 150ms ease, transform 150ms ease;
+}
+
+    .fuel-delete-link svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .fuel-delete-link:hover {
+        color: var(--fuel-danger);
+    }
+
+    .fuel-delete-link:active {
+        transform: scale(0.96);
+    }
+
+
+/* =========================================================
+   DELETE CONFIRMATION
+   ========================================================= */
+
+.fuel-delete-confirm {
+    margin-top: 0.8rem;
+    padding: 0.85rem;
+    border-radius: var(--fuel-radius-small);
+    background: rgba(251, 91, 104, 0.07);
+    border: 1px solid rgba(251, 91, 104, 0.15);
+    animation: fuelConfirmIn 180ms ease-out;
+}
+
+    .fuel-delete-confirm strong {
+        color: #ff8791;
+        font-size: 0.84rem;
+    }
+
+    .fuel-delete-confirm p {
+        margin: 0.25rem 0 0.75rem;
+        color: var(--fuel-muted);
+        font-size: 0.72rem;
+    }
+
+.fuel-confirm-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.fuel-danger-button,
+.fuel-cancel-button {
+    flex: 1;
+    padding: 0.58rem;
+    border-radius: 11px;
+    font-size: 0.74rem;
+    font-weight: 750;
+    transition: transform 130ms ease;
+}
+
+.fuel-danger-button {
+    border: 0;
+    color: white;
+    background: #e94d5b;
+}
+
+.fuel-cancel-button {
+    border: 1px solid var(--fuel-border);
+    color: var(--fuel-text);
+    background: rgba(255,255,255,0.04);
+}
+
+    .fuel-danger-button:active,
+    .fuel-cancel-button:active {
+        transform: scale(0.96);
+    }
+
+
+/* =========================================================
+   SECONDARY ACTION / CARS
+   ========================================================= */
+
+.fuel-secondary-action {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius-small);
+    text-align: left;
+    color: var(--fuel-text);
+    background: linear-gradient( 145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    transition: transform 150ms ease, border-color 150ms ease;
+}
+
+    .fuel-secondary-action:active {
+        transform: scale(0.98);
+    }
+
+.fuel-secondary-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #ffb06f;
+    background: rgba(251, 146, 60, 0.10);
+}
+
+    .fuel-secondary-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+.fuel-secondary-action > span:nth-child(2) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.fuel-secondary-action strong {
+    font-size: 0.84rem;
+}
+
+.fuel-secondary-action small {
+    margin-top: 0.1rem;
+    color: var(--fuel-muted);
+    font-size: 0.68rem;
+}
+
+.fuel-secondary-arrow {
+    width: 18px;
+    height: 18px;
+    color: var(--fuel-muted);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.fuel-empty-card {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: var(--fuel-surface);
+}
+
+.fuel-empty-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 0.8rem;
+    border-radius: 15px;
+    color: #bca8ff;
+    background: rgba(139, 92, 246, 0.12);
+}
+
+    .fuel-empty-icon svg {
+        width: 25px;
+        height: 25px;
+    }
+
+.fuel-empty-card h3 {
+    margin-bottom: 0.3rem;
+    color: var(--fuel-text);
+    font-size: 1rem;
+}
+
+.fuel-empty-card p {
+    color: var(--fuel-muted);
+    font-size: 0.76rem;
+}
+
+.fuel-small-action {
+    padding: 0.65rem 0.9rem;
+    border: 0;
+    border-radius: 12px;
+    color: white;
+    background: linear-gradient( 90deg, var(--fuel-purple), var(--fuel-blue) );
+    font-size: 0.76rem;
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+.bottom-nav {
+    position: fixed;
+    left: 50%;
+    bottom: max(0.65rem, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    width: calc(100% - 1.2rem);
+    max-width: 540px;
+    min-height: 68px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0.35rem;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 22px;
+    background: rgba(13, 17, 34, 0.92);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.055);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    z-index: 1000;
+}
+
+.bottom-nav-item {
+    position: relative;
+    min-height: 58px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.22rem;
+    padding: 0.35rem 0.2rem;
+    border-radius: 17px;
+    color: #7f879f;
+    text-decoration: none;
+    font-size: 0.63rem;
+    font-weight: 650;
+    transition: color 180ms ease, background 180ms ease, transform 130ms ease;
+}
+
+    .bottom-nav-item:hover {
+        color: #aeb5ca;
+    }
+
+    .bottom-nav-item:active {
+        transform: scale(0.93);
+    }
+
+.bottom-nav-icon {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    transition: background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+    .bottom-nav-icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+.bottom-nav-item.active {
+    color: #d7ccff;
+    font-weight: 750;
+    background: linear-gradient( 145deg, rgba(139, 92, 246, 0.15), rgba(34, 211, 238, 0.045) );
+}
+
+    .bottom-nav-item.active .bottom-nav-icon {
+        color: #c6b5ff;
+        background: rgba(139, 92, 246, 0.12);
+        box-shadow: 0 0 18px rgba(139, 92, 246, 0.14);
+        transform: translateY(-1px);
+    }
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+.fuel-animate {
+    opacity: 0;
+    animation: fuelSlideIn 480ms cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+.fuel-delay-1 {
+    animation-delay: 30ms;
+}
+
+.fuel-delay-2 {
+    animation-delay: 90ms;
+}
+
+.fuel-delay-3 {
+    animation-delay: 150ms;
+}
+
+.fuel-delay-4 {
+    animation-delay: 210ms;
+}
+
+.fuel-delay-5 {
+    animation-delay: 270ms;
+}
+
+@keyframes fuelSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fuelPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(0.78);
+        opacity: 0.65;
+    }
+}
+
+@keyframes fuelConfirmIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   MOBILE TWEAKS
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .fuel-logo {
+        font-size: 1.45rem;
+    }
+
+    .fuel-brand-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .fuel-stat-card {
+        padding: 0.85rem;
+    }
+
+    .fuel-stat-number {
+        font-size: 1.75rem;
+    }
+
+    .fuel-main-action {
+        padding: 0.9rem;
+    }
+
+    .fuel-main-action-text small {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 768px) {
+
+    .app-content {
+        padding-top: 2rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .fuel-home {
+        max-width: 620px;
+        margin: 0 auto;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY - REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .fuel-animate,
+    .fuel-live-dot span {
+        animation: none;
+    }
+
+    .fuel-animate {
+        opacity: 1;
+    }
+}
+
+/* Mer luft mellan Ny tankning och Senaste tankningen */
+
+.fuel-main-action {
+    margin-bottom: 1.8rem;
+}
+
+/* =========================================================
+   FUELTRACKER PAGE TRANSITION
+   ========================================================= */
+
+/*
+   Varje sida glider in från höger när den visas.
+   Fungerar både när appen öppnas och vid navigation.
+*/
+
+.app-content {
+    overflow-x: hidden;
+}
+
+    .app-content > * {
+        animation: fuelPageEnter 320ms cubic-bezier(.22, .85, .32, 1) both;
+    }
+
+@keyframes fuelPageEnter {
+    0% {
+        opacity: 0;
+        transform: translateX(32px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/*
+   Respektera användare som stängt av animationer
+   i telefonens/systemets inställningar.
+*/
+
+@media (prefers-reduced-motion: reduce) {
+    .app-content > * {
+        animation: none;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - ADD FUEL PAGE
+   ========================================================= */
+
+.fuel-form-page {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    color: var(--fuel-text);
+}
+
+    .fuel-form-page svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* HEADER */
+
+.fuel-page-header {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 0.4rem 0 1.5rem;
+}
+
+.fuel-page-header-icon {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+}
+
+    .fuel-page-header-icon svg {
+        width: 27px;
+        height: 27px;
+    }
+
+.fuel-page-header-purple {
+    color: #d5c8ff;
+    background: linear-gradient( 145deg, rgba(139, 92, 246, 0.30), rgba(59, 130, 246, 0.15) );
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+}
+
+.fuel-page-header h1 {
+    margin: 0.08rem 0 0;
+    color: var(--fuel-text);
+    font-size: 1.55rem;
+    font-weight: 850;
+    letter-spacing: -0.045em;
+}
+
+.fuel-page-header p {
+    margin: 0.18rem 0 0;
+    color: var(--fuel-muted);
+    font-size: 0.78rem;
+}
+
+
+/* FORM CARD */
+
+.fuel-form-card {
+    overflow: hidden;
+    padding: 0 1rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: linear-gradient( 145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.018) ), var(--fuel-surface);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.fuel-field {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--fuel-border);
+}
+
+.fuel-field-last {
+    border-bottom: 0;
+}
+
+.fuel-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.7rem;
+    color: var(--fuel-text);
+    font-size: 0.82rem;
+    font-weight: 750;
+}
+
+    .fuel-field label > span:last-child {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fuel-field label small {
+        margin-top: 0.08rem;
+        color: var(--fuel-muted);
+        font-size: 0.65rem;
+        font-weight: 500;
+    }
+
+
+/* FIELD ICONS */
+
+.fuel-field-icon {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+}
+
+    .fuel-field-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+.fuel-field-purple {
+    color: #c9b8ff;
+    background: rgba(139, 92, 246, 0.13);
+}
+
+.fuel-field-cyan {
+    color: #72e5f5;
+    background: rgba(34, 211, 238, 0.11);
+}
+
+.fuel-field-orange {
+    color: #ffb06f;
+    background: rgba(251, 146, 60, 0.11);
+}
+
+.fuel-field-lime {
+    color: #c1ed7d;
+    background: rgba(163, 230, 53, 0.10);
+}
+
+
+/* INPUTS */
+
+.fuel-input-wrapper {
+    position: relative;
+    border-radius: 14px;
+    transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+    .fuel-input-wrapper:focus-within {
+        box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.65), 0 0 0 4px rgba(139, 92, 246, 0.08), 0 0 22px rgba(139, 92, 246, 0.12);
+        transform: translateY(-1px);
+    }
+
+.fuel-input {
+    width: 100%;
+    min-height: 49px;
+    padding: 0.75rem 0.85rem;
+    outline: none;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    color: var(--fuel-text);
+    background: rgba(6, 9, 22, 0.55);
+    font-size: 0.84rem;
+    transition: border-color 180ms ease, background 180ms ease;
+}
+
+    .fuel-input:focus {
+        border-color: rgba(139, 92, 246, 0.40);
+        background: rgba(8, 11, 27, 0.82);
+    }
+
+    .fuel-input::placeholder {
+        color: #646b84;
+    }
+
+select.fuel-input {
+    cursor: pointer;
+}
+
+    select.fuel-input option {
+        color: white;
+        background: #11162b;
+    }
+
+.fuel-input-with-unit .fuel-input {
+    padding-right: 3.2rem;
+}
+
+.fuel-input-unit {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fuel-muted);
+    font-size: 0.72rem;
+    font-weight: 750;
+    pointer-events: none;
+}
+
+.fuel-date-input {
+    color-scheme: dark;
+}
+
+
+/* LIVE PRICE */
+
+.fuel-live-price {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-top: 0.85rem;
+    padding: 0.9rem;
+    border: 1px solid rgba(34, 211, 238, 0.16);
+    border-radius: var(--fuel-radius-small);
+    background: linear-gradient( 120deg, rgba(34, 211, 238, 0.08), rgba(139, 92, 246, 0.07) ), var(--fuel-surface);
+    box-shadow: 0 10px 30px rgba(34, 211, 238, 0.05);
+    animation: fuelPriceAppear 220ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.fuel-live-price-left {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.fuel-live-price-icon {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #71e4f4;
+    background: rgba(34, 211, 238, 0.11);
+}
+
+    .fuel-live-price-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+.fuel-live-price-left > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.fuel-live-price-left span {
+    color: #82dce9;
+    font-size: 0.62rem;
+    font-weight: 850;
+    letter-spacing: 0.08em;
+}
+
+.fuel-live-price-left small {
+    margin-top: 0.08rem;
+    color: var(--fuel-muted);
+    font-size: 0.62rem;
+}
+
+.fuel-live-price-value {
+    flex: 0 0 auto;
+    color: var(--fuel-text);
+    font-size: 1.3rem;
+    font-weight: 850;
+    letter-spacing: -0.04em;
+}
+
+    .fuel-live-price-value small {
+        color: #70c6d2;
+        font-size: 0.62rem;
+        letter-spacing: 0;
+    }
+
+
+/* SAVE BUTTON */
+
+.fuel-save-button {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 0.75rem 0.9rem;
+    border: 0;
+    border-radius: 18px;
+    color: white;
+    background: linear-gradient( 105deg, #713df1 0%, #7c4dff 38%, #2563eb 72%, #0891b2 115% );
+    box-shadow: 0 15px 38px rgba(91, 72, 238, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    font-size: 0.9rem;
+    font-weight: 800;
+    transition: transform 130ms cubic-bezier(.2, .8, .2, 1), box-shadow 130ms ease, filter 130ms ease;
+}
+
+    .fuel-save-button::before {
+        content: "";
+        position: absolute;
+        top: -60%;
+        left: -35%;
+        width: 28%;
+        height: 220%;
+        transform: rotate(25deg);
+        background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.22), transparent );
+        transition: left 500ms ease;
+        pointer-events: none;
+    }
+
+    .fuel-save-button:hover::before {
+        left: 115%;
+    }
+
+    .fuel-save-button:hover {
+        filter: brightness(1.08);
+        box-shadow: 0 18px 45px rgba(91, 72, 238, 0.38), 0 0 24px rgba(34, 211, 238, 0.08);
+    }
+
+    .fuel-save-button:active {
+        transform: scale(0.955);
+        filter: brightness(0.92);
+        box-shadow: 0 7px 18px rgba(91, 72, 238, 0.23);
+    }
+
+.fuel-save-icon {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.13);
+}
+
+    .fuel-save-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+.fuel-save-button > span:nth-child(2) {
+    flex: 1;
+    text-align: left;
+}
+
+.fuel-save-arrow {
+    font-size: 1.25rem;
+    transition: transform 150ms ease;
+}
+
+.fuel-save-button:hover .fuel-save-arrow {
+    transform: translateX(3px);
+}
+
+
+/* SAVED ANIMATION */
+
+.fuel-saved-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.85rem;
+    padding: 0.85rem;
+    border: 1px solid rgba(163, 230, 53, 0.18);
+    border-radius: var(--fuel-radius-small);
+    background: linear-gradient( 120deg, rgba(163, 230, 53, 0.08), rgba(34, 211, 238, 0.04) ), var(--fuel-surface);
+    animation: fuelSavedPop 420ms cubic-bezier(.18, .89, .32, 1.35);
+}
+
+.fuel-saved-check {
+    flex: 0 0 auto;
+    width: 41px;
+    height: 41px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #d3ff91;
+    background: rgba(163, 230, 53, 0.12);
+    box-shadow: 0 0 20px rgba(163, 230, 53, 0.12);
+}
+
+    .fuel-saved-check svg {
+        width: 23px;
+        height: 23px;
+        stroke-width: 2.5;
+    }
+
+.fuel-saved-message > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.fuel-saved-message strong {
+    color: #d8ffa0;
+    font-size: 0.83rem;
+}
+
+.fuel-saved-message span {
+    margin-top: 0.08rem;
+    color: var(--fuel-muted);
+    font-size: 0.66rem;
+}
+
+
+/* ERROR / WARNING */
+
+.fuel-form-error,
+.fuel-form-warning {
+    margin-top: 0.85rem;
+    padding: 0.85rem;
+    border-radius: var(--fuel-radius-small);
+}
+
+.fuel-form-error {
+    color: #ff9ca4;
+    background: rgba(251, 91, 104, 0.08);
+    border: 1px solid rgba(251, 91, 104, 0.16);
+    font-size: 0.76rem;
+    font-weight: 650;
+}
+
+.fuel-form-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--fuel-text);
+    background: rgba(251, 146, 60, 0.08);
+    border: 1px solid rgba(251, 146, 60, 0.16);
+}
+
+.fuel-form-warning-icon {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #ffc18d;
+    background: rgba(251, 146, 60, 0.12);
+    font-weight: 900;
+}
+
+.fuel-form-warning strong {
+    font-size: 0.8rem;
+}
+
+.fuel-form-warning p {
+    margin: 0.1rem 0 0;
+    color: var(--fuel-muted);
+    font-size: 0.68rem;
+}
+
+
+/* ANIMATIONS */
+
+@keyframes fuelPriceAppear {
+    from {
+        opacity: 0;
+        transform: translateY(7px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fuelSavedPop {
+    0% {
+        opacity: 0;
+        transform: translateY(8px) scale(0.94);
+    }
+
+    65% {
+        transform: translateY(0) scale(1.025);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* BACK BUTTON - MATCH NEW DESIGN */
+
+.fuel-form-page .btn-outline-secondary {
+    border: 1px solid var(--fuel-border);
+    color: #b2b8ce;
+    background: rgba(255, 255, 255, 0.035);
+    border-radius: 12px;
+    font-size: 0.73rem;
+    font-weight: 650;
+    transition: transform 130ms ease, background 130ms ease;
+}
+
+    .fuel-form-page .btn-outline-secondary:hover {
+        color: white;
+        background: rgba(139, 92, 246, 0.10);
+    }
+
+    .fuel-form-page .btn-outline-secondary:active {
+        transform: scale(0.94);
+    }
+
+
+/* MOBILE */
+
+@media (max-width: 380px) {
+
+    .fuel-page-header-icon {
+        width: 47px;
+        height: 47px;
+    }
+
+    .fuel-page-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .fuel-live-price-value {
+        font-size: 1.12rem;
+    }
+
+    .fuel-live-price-left small {
+        display: none;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - HISTORY PAGE
+   ========================================================= */
+
+.fuel-history-page {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    color: var(--fuel-text);
+}
+
+    .fuel-history-page svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* HEADER */
+
+.fuel-history-header-icon {
+    color: #78e5f4;
+    background: linear-gradient( 145deg, rgba(34, 211, 238, 0.18), rgba(59, 130, 246, 0.14) );
+    border: 1px solid rgba(34, 211, 238, 0.20);
+    box-shadow: 0 10px 30px rgba(34, 211, 238, 0.08);
+}
+
+
+/* MONTH PICKER */
+
+.fuel-month-picker {
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+    padding: 0.7rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: linear-gradient( 145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.fuel-month-arrow {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(139, 92, 246, 0.14);
+    border-radius: 14px;
+    color: #c4b4ff;
+    background: rgba(139, 92, 246, 0.08);
+    transition: transform 130ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+
+    .fuel-month-arrow svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .fuel-month-arrow:hover {
+        background: rgba(139, 92, 246, 0.15);
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.08);
+    }
+
+    .fuel-month-arrow:active {
+        transform: scale(0.88);
+    }
+
+.fuel-month-center {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+    .fuel-month-center span {
+        color: var(--fuel-muted);
+        font-size: 0.6rem;
+        font-weight: 800;
+        letter-spacing: 0.13em;
+    }
+
+    .fuel-month-center strong {
+        margin-top: 0.1rem;
+        color: var(--fuel-text);
+        font-size: 1rem;
+        font-weight: 820;
+    }
+
+
+/* FILTER */
+
+.fuel-history-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius-small);
+    background: var(--fuel-surface);
+}
+
+.fuel-history-filter-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--fuel-muted);
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.fuel-history-filter-icon {
+    width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: #ffb06f;
+    background: rgba(251, 146, 60, 0.10);
+}
+
+    .fuel-history-filter-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+.fuel-history-select {
+    flex: 1;
+    min-width: 0;
+    padding: 0.65rem 0.7rem;
+    outline: none;
+    border: 1px solid var(--fuel-border);
+    border-radius: 12px;
+    color: var(--fuel-text);
+    background: rgba(6,9,22,0.55);
+    font-size: 0.75rem;
+}
+
+    .fuel-history-select:focus {
+        border-color: rgba(139,92,246,0.45);
+        box-shadow: 0 0 0 3px rgba(139,92,246,0.07);
+    }
+
+    .fuel-history-select option {
+        color: white;
+        background: #11162b;
+    }
+
+
+/* STATS */
+
+.fuel-history-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-bottom: 1.7rem;
+}
+
+.fuel-history-stat {
+    position: relative;
+    overflow: hidden;
+    min-height: 122px;
+    display: flex;
+    flex-direction: column;
+    padding: 0.85rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: 19px;
+    background: linear-gradient( 145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    box-shadow: 0 14px 35px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.04);
+    isolation: isolate;
+}
+
+.fuel-history-stat-icon {
+    position: relative;
+    z-index: 2;
+    width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 0.55rem;
+    border-radius: 10px;
+}
+
+    .fuel-history-stat-icon svg {
+        width: 17px;
+        height: 17px;
+    }
+
+.fuel-history-stat > span {
+    position: relative;
+    z-index: 2;
+    color: var(--fuel-muted);
+    font-size: 0.66rem;
+    font-weight: 650;
+}
+
+.fuel-history-stat > strong {
+    position: relative;
+    z-index: 2;
+    margin-top: 0.15rem;
+    color: var(--fuel-text);
+    font-size: 1.35rem;
+    line-height: 1.1;
+    font-weight: 850;
+    letter-spacing: -0.045em;
+}
+
+.fuel-history-stat strong small {
+    color: var(--fuel-muted);
+    font-size: 0.58rem;
+    font-weight: 650;
+    letter-spacing: 0;
+}
+
+.fuel-history-money {
+    font-size: clamp(1.05rem, 5vw, 1.35rem) !important;
+}
+
+.fuel-history-stat-glow {
+    position: absolute;
+    right: -38px;
+    bottom: -55px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.fuel-history-stat-purple .fuel-history-stat-icon {
+    color: #c8b7ff;
+    background: rgba(139,92,246,0.14);
+}
+
+.fuel-history-stat-purple .fuel-history-stat-glow {
+    background: rgba(139,92,246,0.22);
+}
+
+.fuel-history-stat-cyan .fuel-history-stat-icon {
+    color: #77e8f7;
+    background: rgba(34,211,238,0.12);
+}
+
+.fuel-history-stat-cyan .fuel-history-stat-glow {
+    background: rgba(34,211,238,0.18);
+}
+
+.fuel-history-stat-orange .fuel-history-stat-icon {
+    color: #ffb16f;
+    background: rgba(251,146,60,0.11);
+}
+
+.fuel-history-stat-orange .fuel-history-stat-glow {
+    background: rgba(251,146,60,0.17);
+}
+
+.fuel-history-stat-lime .fuel-history-stat-icon {
+    color: #c5ee83;
+    background: rgba(163,230,53,0.10);
+}
+
+.fuel-history-stat-lime .fuel-history-stat-glow {
+    background: rgba(163,230,53,0.15);
+}
+
+
+/* LIST HEADING */
+
+.fuel-history-list {
+    margin-bottom: 1rem;
+}
+
+.fuel-history-list-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+}
+
+    .fuel-history-list-title h2 {
+        margin: 0.12rem 0 0;
+        color: var(--fuel-text);
+        font-size: 1.15rem;
+        font-weight: 800;
+        letter-spacing: -0.035em;
+    }
+
+.fuel-history-count {
+    min-width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    padding: 0 0.4rem;
+    border-radius: 10px;
+    color: #c8b8ff;
+    background: rgba(139,92,246,0.10);
+    border: 1px solid rgba(139,92,246,0.13);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+
+/* ENTRY */
+
+.fuel-history-entry {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.85rem;
+    padding: 0.9rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: linear-gradient( 145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    box-shadow: 0 15px 38px rgba(0,0,0,0.17), inset 0 1px 0 rgba(255,255,255,0.04);
+    animation: fuelHistoryEntryIn 300ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+.fuel-history-entry-accent {
+    position: absolute;
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 3px;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient( var(--fuel-purple), var(--fuel-cyan) );
+    box-shadow: 0 0 14px rgba(139,92,246,0.5);
+}
+
+.fuel-history-entry-date {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+    padding-left: 0.15rem;
+    color: var(--fuel-muted);
+}
+
+    .fuel-history-entry-date span {
+        text-transform: capitalize;
+        font-size: 0.65rem;
+    }
+
+    .fuel-history-entry-date strong {
+        color: #c1c6d7;
+        font-size: 0.65rem;
+        font-weight: 700;
+    }
+
+    .fuel-history-entry-date span::after {
+        content: "•";
+        margin-left: 0.35rem;
+        color: #555d79;
+    }
+
+
+/* ENTRY TOP */
+
+.fuel-history-entry-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+}
+
+.fuel-history-car {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.fuel-history-car-icon {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #c7b6ff;
+    background: rgba(139,92,246,0.12);
+}
+
+    .fuel-history-car-icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+.fuel-history-car h3 {
+    margin: 0;
+    overflow: hidden;
+    color: var(--fuel-text);
+    font-size: 0.9rem;
+    font-weight: 780;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.fuel-history-price {
+    flex: 0 0 auto;
+    padding: 0.4rem 0.5rem;
+    border-radius: 10px;
+    color: #79e6f4;
+    background: rgba(34,211,238,0.09);
+    border: 1px solid rgba(34,211,238,0.12);
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+    .fuel-history-price small {
+        color: #66b9c4;
+        font-size: 0.56rem;
+    }
+
+
+/* VALUES */
+
+.fuel-history-entry-values {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-top: 0.85rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--fuel-border);
+    border-bottom: 1px solid var(--fuel-border);
+}
+
+    .fuel-history-entry-values > div:not(.fuel-history-value-divider) {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .fuel-history-entry-values span {
+        color: var(--fuel-muted);
+        font-size: 0.63rem;
+    }
+
+    .fuel-history-entry-values strong {
+        margin-top: 0.12rem;
+        color: var(--fuel-text);
+        font-size: 0.95rem;
+        font-weight: 800;
+    }
+
+    .fuel-history-entry-values small {
+        color: var(--fuel-muted);
+        font-size: 0.57rem;
+    }
+
+.fuel-history-value-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--fuel-border);
+}
+
+
+/* EMPTY */
+
+.fuel-history-empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: var(--fuel-surface);
+}
+
+.fuel-history-empty-icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 0.7rem;
+    border-radius: 14px;
+    color: #c7b6ff;
+    background: rgba(139,92,246,0.11);
+}
+
+    .fuel-history-empty-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+.fuel-history-empty h3 {
+    margin-bottom: 0.25rem;
+    color: var(--fuel-text);
+    font-size: 0.9rem;
+}
+
+.fuel-history-empty p {
+    margin: 0;
+    color: var(--fuel-muted);
+    font-size: 0.7rem;
+}
+
+
+/* BACK BUTTON */
+
+.fuel-history-page .btn-outline-secondary {
+    border: 1px solid var(--fuel-border);
+    color: #b2b8ce;
+    background: rgba(255,255,255,0.035);
+    border-radius: 12px;
+    font-size: 0.73rem;
+    font-weight: 650;
+    transition: transform 130ms ease, background 130ms ease;
+}
+
+    .fuel-history-page .btn-outline-secondary:hover {
+        color: white;
+        background: rgba(139,92,246,0.10);
+    }
+
+    .fuel-history-page .btn-outline-secondary:active {
+        transform: scale(0.94);
+    }
+
+
+/* ANIMATION */
+
+@keyframes fuelHistoryEntryIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* SMALL PHONES */
+
+@media (max-width: 380px) {
+
+    .fuel-history-stat {
+        min-height: 115px;
+        padding: 0.75rem;
+    }
+
+        .fuel-history-stat > strong {
+            font-size: 1.2rem;
+        }
+
+    .fuel-month-picker {
+        grid-template-columns: 44px 1fr 44px;
+    }
+
+    .fuel-month-arrow {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - CARS PAGE
+   ========================================================= */
+
+.fuel-cars-page {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    color: var(--fuel-text);
+}
+
+    .fuel-cars-page svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* HEADER */
+
+.fuel-cars-header-icon {
+    color: #ffb36e;
+    background: linear-gradient( 145deg, rgba(251, 146, 60, 0.20), rgba(139, 92, 246, 0.12) );
+    border: 1px solid rgba(251, 146, 60, 0.20);
+    box-shadow: 0 10px 30px rgba(251, 146, 60, 0.08);
+}
+
+
+/* ADD CAR FORM */
+
+.fuel-car-form {
+    padding: 1rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: linear-gradient( 145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.fuel-car-form-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+}
+
+    .fuel-car-form-heading h2 {
+        margin: 0.1rem 0 0;
+        color: var(--fuel-text);
+        font-size: 1.08rem;
+        font-weight: 820;
+        letter-spacing: -0.035em;
+    }
+
+.fuel-car-form-plus {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    color: #c9b8ff;
+    background: rgba(139,92,246,0.11);
+    border: 1px solid rgba(139,92,246,0.13);
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+
+/* FORM FIELDS */
+
+.fuel-car-field {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--fuel-border);
+}
+
+.fuel-car-field-last {
+    border-bottom: 0;
+}
+
+.fuel-car-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 0.65rem;
+    color: var(--fuel-text);
+    font-size: 0.78rem;
+    font-weight: 750;
+}
+
+    .fuel-car-field label > span:last-child {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fuel-car-field label small {
+        margin-top: 0.05rem;
+        color: var(--fuel-muted);
+        font-size: 0.62rem;
+        font-weight: 500;
+    }
+
+.fuel-car-field-icon {
+    flex: 0 0 auto;
+    width: 33px;
+    height: 33px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+}
+
+    .fuel-car-field-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+.fuel-car-purple {
+    color: #c8b7ff;
+    background: rgba(139,92,246,0.13);
+}
+
+.fuel-car-cyan {
+    color: #75e5f4;
+    background: rgba(34,211,238,0.11);
+}
+
+.fuel-car-orange {
+    color: #ffb16f;
+    background: rgba(251,146,60,0.11);
+}
+
+
+/* INPUTS */
+
+.fuel-car-input-wrapper {
+    border-radius: 14px;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+    .fuel-car-input-wrapper:focus-within {
+        transform: translateY(-1px);
+        box-shadow: 0 0 0 1px rgba(139,92,246,0.65), 0 0 0 4px rgba(139,92,246,0.08), 0 0 22px rgba(139,92,246,0.12);
+    }
+
+.fuel-car-input {
+    width: 100%;
+    min-height: 49px;
+    padding: 0.75rem 0.85rem;
+    outline: none;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    color: var(--fuel-text);
+    background: rgba(6,9,22,0.55);
+    font-size: 0.82rem;
+    transition: border-color 180ms ease, background 180ms ease;
+}
+
+    .fuel-car-input:focus {
+        border-color: rgba(139,92,246,0.40);
+        background: rgba(8,11,27,0.82);
+    }
+
+    .fuel-car-input::placeholder {
+        color: #646b84;
+    }
+
+select.fuel-car-input {
+    cursor: pointer;
+}
+
+    select.fuel-car-input option {
+        color: white;
+        background: #11162b;
+    }
+
+.fuel-registration-input {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+
+/* ADD BUTTON */
+
+.fuel-add-car-button {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.9rem;
+    padding: 0.7rem 0.85rem;
+    border: 0;
+    border-radius: 18px;
+    color: white;
+    background: linear-gradient( 105deg, #713df1 0%, #7c4dff 38%, #2563eb 72%, #0891b2 115% );
+    box-shadow: 0 15px 38px rgba(91,72,238,0.26), inset 0 1px 0 rgba(255,255,255,0.22);
+    font-size: 0.87rem;
+    font-weight: 800;
+    transition: transform 130ms cubic-bezier(.2,.8,.2,1), filter 130ms ease, box-shadow 130ms ease;
+}
+
+    .fuel-add-car-button::before {
+        content: "";
+        position: absolute;
+        top: -60%;
+        left: -35%;
+        width: 28%;
+        height: 220%;
+        transform: rotate(25deg);
+        background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.22), transparent );
+        transition: left 500ms ease;
+        pointer-events: none;
+    }
+
+    .fuel-add-car-button:hover::before {
+        left: 115%;
+    }
+
+    .fuel-add-car-button:hover {
+        filter: brightness(1.08);
+        box-shadow: 0 18px 45px rgba(91,72,238,0.35);
+    }
+
+    .fuel-add-car-button:active {
+        transform: scale(0.955);
+        filter: brightness(0.92);
+    }
+
+.fuel-add-car-icon {
+    width: 37px;
+    height: 37px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.13);
+}
+
+    .fuel-add-car-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+.fuel-add-car-button > span:nth-child(2) {
+    flex: 1;
+    text-align: left;
+}
+
+.fuel-add-car-plus {
+    font-size: 1.25rem;
+}
+
+
+/* ERROR */
+
+.fuel-car-error {
+    margin-top: 0.7rem;
+    padding: 0.75rem;
+    border: 1px solid rgba(251,91,104,0.16);
+    border-radius: 13px;
+    color: #ff9ca4;
+    background: rgba(251,91,104,0.08);
+    font-size: 0.72rem;
+    font-weight: 650;
+}
+
+
+/* CAR LIST */
+
+.fuel-car-list {
+    margin-top: 1.7rem;
+}
+
+.fuel-car-list-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+}
+
+    .fuel-car-list-heading h2 {
+        margin: 0.1rem 0 0;
+        color: var(--fuel-text);
+        font-size: 1.12rem;
+        font-weight: 820;
+        letter-spacing: -0.035em;
+    }
+
+.fuel-car-count {
+    min-width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    padding: 0 0.4rem;
+    border-radius: 10px;
+    color: #ffb370;
+    background: rgba(251,146,60,0.09);
+    border: 1px solid rgba(251,146,60,0.12);
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+
+/* CAR CARD */
+
+.fuel-car-card {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.85rem;
+    padding: 0.95rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: linear-gradient( 145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.04);
+    animation: fuelCarAppear 300ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+.fuel-car-card-accent {
+    position: absolute;
+    left: 0;
+    top: 15px;
+    bottom: 15px;
+    width: 3px;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient( #fb923c, #8b5cf6, #22d3ee );
+    box-shadow: 0 0 15px rgba(251,146,60,0.24);
+}
+
+.fuel-car-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.fuel-car-card-icon {
+    flex: 0 0 auto;
+    width: 45px;
+    height: 45px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: #ffb16f;
+    background: linear-gradient( 145deg, rgba(251,146,60,0.15), rgba(139,92,246,0.10) );
+    border: 1px solid rgba(251,146,60,0.10);
+}
+
+    .fuel-car-card-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+.fuel-car-card-name {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+    .fuel-car-card-name span {
+        color: var(--fuel-muted);
+        font-size: 0.57rem;
+        font-weight: 800;
+        letter-spacing: 0.11em;
+    }
+
+    .fuel-car-card-name h3 {
+        margin: 0.05rem 0 0;
+        overflow: hidden;
+        color: var(--fuel-text);
+        font-size: 1rem;
+        font-weight: 820;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+
+/* CAR DETAILS */
+
+.fuel-car-info {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-top: 0.9rem;
+    padding: 0.8rem 0;
+    border-top: 1px solid var(--fuel-border);
+    border-bottom: 1px solid var(--fuel-border);
+}
+
+.fuel-car-info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+    .fuel-car-info-item > span {
+        color: var(--fuel-muted);
+        font-size: 0.54rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+    }
+
+.fuel-car-info-divider {
+    width: 1px;
+    height: 35px;
+    background: var(--fuel-border);
+}
+
+.fuel-registration-badge {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid rgba(34,211,238,0.12);
+    border-radius: 8px;
+    color: #8ae9f6;
+    background: rgba(34,211,238,0.07);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+}
+
+.fuel-type-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #d5dae8;
+    font-size: 0.72rem;
+    font-weight: 750;
+}
+
+    .fuel-type-badge i {
+        width: 7px;
+        height: 7px;
+        display: block;
+        border-radius: 50%;
+        background: #a3e635;
+        box-shadow: 0 0 9px rgba(163,230,53,0.38);
+    }
+
+
+/* DELETE */
+
+.fuel-car-delete-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    padding: 0.55rem;
+    border: 0;
+    color: #8e95ab;
+    background: transparent;
+    font-size: 0.67rem;
+    font-weight: 650;
+    transition: color 140ms ease, background 140ms ease, transform 130ms ease;
+}
+
+    .fuel-car-delete-button svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .fuel-car-delete-button:hover {
+        color: #ff8e98;
+        background: rgba(251,91,104,0.04);
+    }
+
+    .fuel-car-delete-button:active {
+        transform: scale(0.95);
+    }
+
+
+/* DELETE CONFIRM */
+
+.fuel-car-delete-confirm {
+    margin-top: 0.8rem;
+    padding: 0.8rem;
+    border: 1px solid rgba(251,91,104,0.17);
+    border-radius: 14px;
+    background: linear-gradient( 120deg, rgba(251,91,104,0.08), rgba(139,92,246,0.025) );
+    animation: fuelDeleteExpand 220ms cubic-bezier(.2,.8,.2,1);
+}
+
+.fuel-car-delete-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+}
+
+.fuel-car-delete-warning-icon {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    color: #ff9ca4;
+    background: rgba(251,91,104,0.11);
+    font-weight: 900;
+}
+
+.fuel-car-delete-warning strong {
+    color: #ffabb2;
+    font-size: 0.75rem;
+}
+
+.fuel-car-delete-warning p {
+    margin: 0.15rem 0 0;
+    color: var(--fuel-muted);
+    font-size: 0.63rem;
+    line-height: 1.45;
+}
+
+.fuel-car-delete-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.fuel-car-danger-button,
+.fuel-car-cancel-button {
+    min-height: 40px;
+    border-radius: 11px;
+    font-size: 0.68rem;
+    font-weight: 750;
+    transition: transform 130ms ease, filter 130ms ease;
+}
+
+.fuel-car-danger-button {
+    border: 1px solid rgba(251,91,104,0.20);
+    color: #ffd8dc;
+    background: linear-gradient( 120deg, rgba(239,68,68,0.68), rgba(190,24,93,0.58) );
+}
+
+.fuel-car-cancel-button {
+    border: 1px solid var(--fuel-border);
+    color: #b4bacd;
+    background: rgba(255,255,255,0.035);
+}
+
+    .fuel-car-danger-button:active,
+    .fuel-car-cancel-button:active {
+        transform: scale(0.94);
+    }
+
+
+/* EMPTY */
+
+.fuel-cars-empty {
+    padding: 1.6rem 1rem;
+    text-align: center;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: var(--fuel-surface);
+}
+
+.fuel-cars-empty-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 0.7rem;
+    border-radius: 15px;
+    color: #ffb16f;
+    background: rgba(251,146,60,0.10);
+}
+
+    .fuel-cars-empty-icon svg {
+        width: 25px;
+        height: 25px;
+    }
+
+.fuel-cars-empty h3 {
+    margin-bottom: 0.2rem;
+    color: var(--fuel-text);
+    font-size: 0.9rem;
+}
+
+.fuel-cars-empty p {
+    margin: 0;
+    color: var(--fuel-muted);
+    font-size: 0.68rem;
+}
+
+
+/* BACK BUTTON */
+
+.fuel-cars-page .btn-outline-secondary {
+    border: 1px solid var(--fuel-border);
+    color: #b2b8ce;
+    background: rgba(255,255,255,0.035);
+    border-radius: 12px;
+    font-size: 0.73rem;
+    font-weight: 650;
+    transition: transform 130ms ease, background 130ms ease;
+}
+
+    .fuel-cars-page .btn-outline-secondary:hover {
+        color: white;
+        background: rgba(251,146,60,0.08);
+    }
+
+    .fuel-cars-page .btn-outline-secondary:active {
+        transform: scale(0.94);
+    }
+
+
+/* ANIMATIONS */
+
+@keyframes fuelCarAppear {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.99);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fuelDeleteExpand {
+    from {
+        opacity: 0;
+        transform: translateY(-5px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - BACKUP PAGE
+   ========================================================= */
+
+.fuel-backup-page {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    color: var(--fuel-text);
+}
+
+    .fuel-backup-page svg {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* HEADER */
+
+.fuel-backup-header-icon {
+    color: #c8b7ff;
+    background: linear-gradient( 145deg, rgba(139,92,246,0.22), rgba(34,211,238,0.12) );
+    border: 1px solid rgba(139,92,246,0.20);
+    box-shadow: 0 10px 30px rgba(139,92,246,0.10);
+}
+
+
+/* PRIVACY INFO */
+
+.fuel-backup-info {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    border: 1px solid rgba(163,230,53,0.12);
+    border-radius: 15px;
+    background: linear-gradient( 120deg, rgba(163,230,53,0.06), rgba(34,211,238,0.035) );
+}
+
+.fuel-backup-info-icon {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #c8ef88;
+    background: rgba(163,230,53,0.09);
+}
+
+    .fuel-backup-info-icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+.fuel-backup-info > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.fuel-backup-info strong {
+    color: #d7e8bf;
+    font-size: 0.72rem;
+}
+
+.fuel-backup-info p {
+    margin: 0.1rem 0 0;
+    color: var(--fuel-muted);
+    font-size: 0.62rem;
+    line-height: 1.45;
+}
+
+
+/* MAIN CARDS */
+
+.fuel-backup-card {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.9rem;
+    padding: 1rem;
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    background: linear-gradient( 145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) ), var(--fuel-surface);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.19), inset 0 1px 0 rgba(255,255,255,0.045);
+    isolation: isolate;
+}
+
+.fuel-backup-card-glow {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    right: -85px;
+    top: -85px;
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.fuel-backup-export .fuel-backup-card-glow {
+    background: rgba(139,92,246,0.16);
+}
+
+.fuel-backup-restore .fuel-backup-card-glow {
+    background: rgba(251,146,60,0.12);
+}
+
+
+/* CARD HEADER */
+
+.fuel-backup-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+    .fuel-backup-card-header h2 {
+        margin: 0.08rem 0 0;
+        color: var(--fuel-text);
+        font-size: 1rem;
+        font-weight: 820;
+        letter-spacing: -0.035em;
+    }
+
+.fuel-backup-action-icon {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+}
+
+    .fuel-backup-action-icon svg {
+        width: 23px;
+        height: 23px;
+    }
+
+.fuel-backup-download-icon {
+    color: #c7b6ff;
+    background: rgba(139,92,246,0.12);
+}
+
+.fuel-backup-upload-icon {
+    color: #ffb16f;
+    background: rgba(251,146,60,0.11);
+}
+
+
+/* DESCRIPTION */
+
+.fuel-backup-description {
+    margin: 0.85rem 0;
+    color: var(--fuel-muted);
+    font-size: 0.69rem;
+    line-height: 1.55;
+}
+
+
+/* CONTAINS */
+
+.fuel-backup-contains {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+}
+
+    .fuel-backup-contains > div {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.55rem;
+        border: 1px solid var(--fuel-border);
+        border-radius: 9px;
+        color: #b5bbce;
+        background: rgba(255,255,255,0.025);
+        font-size: 0.61rem;
+        font-weight: 650;
+    }
+
+.fuel-backup-dot {
+    width: 6px;
+    height: 6px;
+    display: block;
+    border-radius: 50%;
+}
+
+.fuel-backup-dot-purple {
+    background: #8b5cf6;
+    box-shadow: 0 0 8px rgba(139,92,246,0.45);
+}
+
+.fuel-backup-dot-cyan {
+    background: #22d3ee;
+    box-shadow: 0 0 8px rgba(34,211,238,0.40);
+}
+
+
+/* EXPORT BUTTON */
+
+.fuel-backup-export-button {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 0.8rem;
+    border: 0;
+    border-radius: 17px;
+    color: white;
+    background: linear-gradient( 105deg, #713df1 0%, #7c4dff 38%, #2563eb 72%, #0891b2 115% );
+    box-shadow: 0 14px 35px rgba(91,72,238,0.26), inset 0 1px 0 rgba(255,255,255,0.22);
+    font-size: 0.82rem;
+    font-weight: 800;
+    transition: transform 130ms ease, filter 130ms ease, box-shadow 130ms ease;
+}
+
+    .fuel-backup-export-button::before {
+        content: "";
+        position: absolute;
+        top: -60%;
+        left: -35%;
+        width: 28%;
+        height: 220%;
+        transform: rotate(25deg);
+        background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.22), transparent );
+        transition: left 500ms ease;
+        pointer-events: none;
+    }
+
+    .fuel-backup-export-button:hover::before {
+        left: 115%;
+    }
+
+    .fuel-backup-export-button:hover {
+        filter: brightness(1.08);
+        box-shadow: 0 18px 42px rgba(91,72,238,0.34);
+    }
+
+    .fuel-backup-export-button:active {
+        transform: scale(0.955);
+        filter: brightness(0.92);
+    }
+
+.fuel-backup-button-icon {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.13);
+}
+
+    .fuel-backup-button-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+.fuel-backup-export-button > span:nth-child(2) {
+    flex: 1;
+    text-align: left;
+}
+
+.fuel-backup-button-arrow {
+    font-size: 1.2rem;
+    transition: transform 150ms ease;
+}
+
+.fuel-backup-export-button:hover
+.fuel-backup-button-arrow {
+    transform: translateX(3px);
+}
+
+
+/* RESTORE WARNING */
+
+.fuel-backup-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+    padding: 0.7rem;
+    border: 1px solid rgba(251,146,60,0.14);
+    border-radius: 13px;
+    background: rgba(251,146,60,0.055);
+}
+
+.fuel-backup-warning-icon {
+    flex: 0 0 auto;
+    width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: #ffb677;
+    background: rgba(251,146,60,0.11);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+
+.fuel-backup-warning p {
+    margin: 0;
+    color: #aeb4c6;
+    font-size: 0.62rem;
+    line-height: 1.45;
+}
+
+
+/* FILE PICKER */
+
+.fuel-backup-file-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 67px;
+    padding: 0.75rem;
+    overflow: hidden;
+    border: 1px dashed rgba(34,211,238,0.23);
+    border-radius: 15px;
+    background: linear-gradient( 120deg, rgba(34,211,238,0.045), rgba(139,92,246,0.04) );
+    cursor: pointer;
+    transition: border-color 160ms ease, background 160ms ease, transform 130ms ease, box-shadow 160ms ease;
+}
+
+    .fuel-backup-file-area:hover {
+        border-color: rgba(34,211,238,0.40);
+        background: linear-gradient( 120deg, rgba(34,211,238,0.075), rgba(139,92,246,0.06) );
+        box-shadow: 0 0 25px rgba(34,211,238,0.05);
+    }
+
+    .fuel-backup-file-area:active {
+        transform: scale(0.985);
+    }
+
+.fuel-backup-file-icon {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: #78e5f4;
+    background: rgba(34,211,238,0.09);
+}
+
+    .fuel-backup-file-icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+.fuel-backup-file-text {
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+}
+
+    .fuel-backup-file-text strong {
+        color: #d9ddea;
+        font-size: 0.72rem;
+    }
+
+    .fuel-backup-file-text span {
+        margin-top: 0.05rem;
+        color: var(--fuel-muted);
+        font-size: 0.59rem;
+    }
+
+.fuel-backup-file-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+/* RESTORE CONFIRMATION */
+
+.fuel-restore-confirm {
+    margin-top: 0.8rem;
+    padding: 0.8rem;
+    border: 1px solid rgba(251,91,104,0.17);
+    border-radius: 15px;
+    background: linear-gradient( 120deg, rgba(251,91,104,0.075), rgba(139,92,246,0.035) );
+    animation: fuelBackupConfirmIn 240ms cubic-bezier(.2,.8,.2,1);
+}
+
+.fuel-restore-confirm-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+}
+
+.fuel-restore-confirm-icon {
+    flex: 0 0 auto;
+    width: 37px;
+    height: 37px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    color: #ff9ca4;
+    background: rgba(251,91,104,0.10);
+}
+
+    .fuel-restore-confirm-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+.fuel-restore-confirm-top strong {
+    color: #ffb1b7;
+    font-size: 0.76rem;
+}
+
+.fuel-restore-confirm-top p {
+    margin: 0.12rem 0 0;
+    color: var(--fuel-muted);
+    font-size: 0.62rem;
+    line-height: 1.45;
+}
+
+
+/* RESTORE SUMMARY */
+
+.fuel-restore-summary {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding: 0.65rem 0;
+    border-top: 1px solid rgba(255,255,255,0.055);
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+}
+
+    .fuel-restore-summary > div:not(:nth-child(2)) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .fuel-restore-summary > div:nth-child(2) {
+        width: 1px;
+        height: 31px;
+        background: var(--fuel-border);
+    }
+
+    .fuel-restore-summary span {
+        color: var(--fuel-muted);
+        font-size: 0.54rem;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+    }
+
+    .fuel-restore-summary strong {
+        margin-top: 0.1rem;
+        color: var(--fuel-text);
+        font-size: 1rem;
+    }
+
+
+/* RESTORE ACTIONS */
+
+.fuel-restore-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.fuel-restore-confirm-button,
+.fuel-restore-cancel-button {
+    min-height: 42px;
+    border-radius: 11px;
+    font-size: 0.68rem;
+    font-weight: 750;
+    transition: transform 130ms ease, filter 130ms ease;
+}
+
+.fuel-restore-confirm-button {
+    border: 1px solid rgba(251,91,104,0.20);
+    color: #ffe1e4;
+    background: linear-gradient( 120deg, rgba(239,68,68,0.70), rgba(190,24,93,0.60) );
+}
+
+.fuel-restore-cancel-button {
+    border: 1px solid var(--fuel-border);
+    color: #b7bdce;
+    background: rgba(255,255,255,0.035);
+}
+
+    .fuel-restore-confirm-button:active,
+    .fuel-restore-cancel-button:active {
+        transform: scale(0.94);
+    }
+
+
+/* SUCCESS */
+
+.fuel-backup-success {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.9rem;
+    padding: 0.8rem;
+    border: 1px solid rgba(163,230,53,0.16);
+    border-radius: 14px;
+    background: linear-gradient( 120deg, rgba(163,230,53,0.075), rgba(34,211,238,0.035) );
+    animation: fuelBackupSuccessIn 420ms cubic-bezier(.18,.89,.32,1.35);
+}
+
+.fuel-backup-success-check {
+    flex: 0 0 auto;
+    width: 39px;
+    height: 39px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #d1fb91;
+    background: rgba(163,230,53,0.11);
+    box-shadow: 0 0 20px rgba(163,230,53,0.10);
+}
+
+    .fuel-backup-success-check svg {
+        width: 22px;
+        height: 22px;
+        stroke-width: 2.5;
+    }
+
+.fuel-backup-success > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.fuel-backup-success strong {
+    color: #d6f7a5;
+    font-size: 0.74rem;
+}
+
+.fuel-backup-success span {
+    margin-top: 0.05rem;
+    color: var(--fuel-muted);
+    font-size: 0.62rem;
+}
+
+
+/* ERROR */
+
+.fuel-backup-error {
+    margin-top: 0.9rem;
+    padding: 0.8rem;
+    border: 1px solid rgba(251,91,104,0.16);
+    border-radius: 14px;
+    color: #ff9ca4;
+    background: rgba(251,91,104,0.075);
+    font-size: 0.68rem;
+    font-weight: 650;
+}
+
+
+/* BACK BUTTON */
+
+.fuel-backup-page .btn-outline-secondary {
+    border: 1px solid var(--fuel-border);
+    color: #b2b8ce;
+    background: rgba(255,255,255,0.035);
+    border-radius: 12px;
+    font-size: 0.73rem;
+    font-weight: 650;
+    transition: transform 130ms ease, background 130ms ease;
+}
+
+    .fuel-backup-page .btn-outline-secondary:hover {
+        color: white;
+        background: rgba(139,92,246,0.10);
+    }
+
+    .fuel-backup-page .btn-outline-secondary:active {
+        transform: scale(0.94);
+    }
+
+
+/* ANIMATIONS */
+
+@keyframes fuelBackupConfirmIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fuelBackupSuccessIn {
+    0% {
+        opacity: 0;
+        transform: translateY(7px) scale(0.95);
+    }
+
+    65% {
+        transform: translateY(0) scale(1.02);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - FINAL MOTION & POLISH
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   1. PAGE ENTRANCE
+   Varje sida glider mjukt in när Blazor renderar den.
+   --------------------------------------------------------- */
+
+.home-page,
+.fuel-add-page,
+.fuel-history-page,
+.fuel-cars-page,
+.fuel-backup-page {
+    animation: fuelPageEnter 360ms cubic-bezier(.22,.8,.24,1) both;
+}
+
+@keyframes fuelPageEnter {
+    from {
+        opacity: 0;
+        transform: translateX(18px);
+        filter: blur(2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   2. SUBTLE LIVING BACKGROUND
+   Väldigt långsam ambient rörelse.
+   --------------------------------------------------------- */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    z-index: -2;
+    pointer-events: none;
+    background: radial-gradient( circle at 18% 22%, rgba(139, 92, 246, 0.11), transparent 27% ), radial-gradient( circle at 82% 72%, rgba(34, 211, 238, 0.075), transparent 28% ), radial-gradient( circle at 68% 18%, rgba(251, 146, 60, 0.045), transparent 23% );
+    animation: fuelAmbientBackground 18s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+@keyframes fuelAmbientBackground {
+    from {
+        transform: translate3d(-1%, -1%, 0) scale(1);
+    }
+
+    to {
+        transform: translate3d(2%, 1.5%, 0) scale(1.04);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   3. CARDS
+   Lite mer respons när man interagerar.
+   --------------------------------------------------------- */
+
+.fuel-history-entry,
+.fuel-car-card,
+.fuel-backup-card {
+    transition: transform 180ms cubic-bezier(.2,.8,.2,1), border-color 180ms ease, box-shadow 180ms ease;
+}
+
+@media (hover: hover) {
+
+    .fuel-history-entry:hover,
+    .fuel-car-card:hover,
+    .fuel-backup-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(139, 92, 246, 0.16);
+        box-shadow: 0 20px 48px rgba(0,0,0,0.22), 0 0 25px rgba(139,92,246,0.035), inset 0 1px 0 rgba(255,255,255,0.055);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   4. STAT CARDS POP IN
+   --------------------------------------------------------- */
+
+.fuel-history-stat {
+    animation: fuelStatPop 420ms cubic-bezier(.18,.89,.32,1.2) both;
+}
+
+    .fuel-history-stat:nth-child(1) {
+        animation-delay: 40ms;
+    }
+
+    .fuel-history-stat:nth-child(2) {
+        animation-delay: 80ms;
+    }
+
+    .fuel-history-stat:nth-child(3) {
+        animation-delay: 120ms;
+    }
+
+    .fuel-history-stat:nth-child(4) {
+        animation-delay: 160ms;
+    }
+
+@keyframes fuelStatPop {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   5. GLOBAL BUTTON PRESS
+   Ger appen riktig touch-känsla.
+   --------------------------------------------------------- */
+
+button,
+a.bottom-nav-item {
+    -webkit-tap-highlight-color: transparent;
+}
+
+    button:not(:disabled) {
+        transform-origin: center;
+        transition: transform 120ms cubic-bezier(.2,.8,.2,1), filter 120ms ease, box-shadow 160ms ease;
+    }
+
+        button:not(:disabled):active {
+            transform: scale(0.955);
+        }
+
+
+/* ---------------------------------------------------------
+   6. PRIMARY ACTION GLOW
+   Väldigt subtil puls på huvudknapparna.
+   --------------------------------------------------------- */
+
+.fuel-add-car-button,
+.fuel-backup-export-button {
+    animation: fuelPrimaryGlow 3.8s ease-in-out infinite;
+}
+
+@keyframes fuelPrimaryGlow {
+
+    0%, 100% {
+        box-shadow: 0 15px 38px rgba(91,72,238,0.24), inset 0 1px 0 rgba(255,255,255,0.20);
+    }
+
+    50% {
+        box-shadow: 0 17px 43px rgba(91,72,238,0.34), 0 0 22px rgba(34,211,238,0.055), inset 0 1px 0 rgba(255,255,255,0.23);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   7. BOTTOM NAVIGATION
+   Aktiv sida får lite mer liv.
+   --------------------------------------------------------- */
+
+.bottom-nav-item {
+    position: relative;
+    overflow: hidden;
+    transition: color 180ms ease, transform 160ms cubic-bezier(.2,.8,.2,1), background 180ms ease;
+}
+
+    .bottom-nav-item::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 5px;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: linear-gradient( 135deg, #8b5cf6, #22d3ee );
+        box-shadow: 0 0 11px rgba(139,92,246,0.55);
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px) scale(0);
+        transition: opacity 180ms ease, transform 220ms cubic-bezier(.18,.89,.32,1.4);
+    }
+
+    .bottom-nav-item.active::after {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    .bottom-nav-item:active {
+        transform: scale(0.91);
+    }
+
+
+    /* Om din nav har SVG-ikoner nu eller senare */
+
+    .bottom-nav-item svg {
+        transition: transform 200ms cubic-bezier(.18,.89,.32,1.4);
+    }
+
+    .bottom-nav-item:active svg {
+        transform: translateY(-2px) scale(1.12);
+    }
+
+
+/* ---------------------------------------------------------
+   8. MONTH ARROWS
+   --------------------------------------------------------- */
+
+.fuel-month-arrow svg {
+    transition: transform 180ms cubic-bezier(.18,.89,.32,1.4);
+}
+
+.fuel-month-arrow:first-child:active svg {
+    transform: translateX(-3px);
+}
+
+.fuel-month-arrow:last-child:active svg {
+    transform: translateX(3px);
+}
+
+
+/* ---------------------------------------------------------
+   9. INPUT FOCUS POLISH
+   --------------------------------------------------------- */
+
+.fuel-car-input,
+.fuel-history-select,
+input,
+select {
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+
+/* ---------------------------------------------------------
+   10. DELETE CONFIRMATIONS
+   --------------------------------------------------------- */
+
+.fuel-car-delete-confirm,
+.fuel-delete-confirm,
+.fuel-restore-confirm {
+    transform-origin: top center;
+    animation: fuelConfirmOpen 240ms cubic-bezier(.18,.89,.32,1.15) both;
+}
+
+@keyframes fuelConfirmOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-5px) scaleY(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scaleY(1);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   11. SUCCESS CHECK EFFECT
+   --------------------------------------------------------- */
+
+.fuel-backup-success-check {
+    animation: fuelSuccessPop 500ms cubic-bezier(.18,.89,.32,1.45) both;
+}
+
+    .fuel-backup-success-check svg {
+        animation: fuelCheckDraw 450ms 140ms ease-out both;
+    }
+
+@keyframes fuelSuccessPop {
+    0% {
+        transform: scale(0.4) rotate(-10deg);
+        opacity: 0;
+    }
+
+    65% {
+        transform: scale(1.12) rotate(2deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fuelCheckDraw {
+    from {
+        stroke-dasharray: 30;
+        stroke-dashoffset: 30;
+    }
+
+    to {
+        stroke-dasharray: 30;
+        stroke-dashoffset: 0;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   12. ENTRY ACCENT GLOW
+   --------------------------------------------------------- */
+
+.fuel-history-entry-accent,
+.fuel-car-card-accent {
+    animation: fuelAccentBreath 4s ease-in-out infinite;
+}
+
+@keyframes fuelAccentBreath {
+
+    0%, 100% {
+        opacity: 0.75;
+        filter: brightness(1);
+    }
+
+    50% {
+        opacity: 1;
+        filter: brightness(1.25);
+    }
+}
+
+
+/* ---------------------------------------------------------
+   13. FILE PICKER REACTION
+   --------------------------------------------------------- */
+
+.fuel-backup-file-icon {
+    transition: transform 220ms cubic-bezier(.18,.89,.32,1.4), color 180ms ease;
+}
+
+.fuel-backup-file-area:hover
+.fuel-backup-file-icon {
+    transform: translateY(-2px) scale(1.05);
+    color: #9ceefa;
+}
+
+
+/* ---------------------------------------------------------
+   14. SMOOTHER MOBILE SCROLL
+   --------------------------------------------------------- */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    overscroll-behavior-y: none;
+}
+
+.app-content {
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* ---------------------------------------------------------
+   15. REDUCED MOTION
+   Viktigt för användare som stängt av animationer.
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - STARTUP SPLASH
+   ========================================================= */
+
+.fuel-startup-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: radial-gradient( circle at 50% 42%, rgba(139, 92, 246, 0.13), transparent 30% ), radial-gradient( circle at 65% 55%, rgba(34, 211, 238, 0.07), transparent 28% ), #080b18;
+    opacity: 1;
+    transition: opacity 300ms ease, transform 400ms cubic-bezier(.4,0,.2,1), filter 350ms ease;
+    pointer-events: all;
+}
+
+
+    /* ---------------------------------------------------------
+   BACKGROUND AMBIENT GLOW
+   --------------------------------------------------------- */
+
+    .fuel-startup-splash::before {
+        content: "";
+        position: absolute;
+        width: 330px;
+        height: 330px;
+        left: 50%;
+        top: 45%;
+        transform: translate(-50%, -50%) scale(0.5);
+        border-radius: 50%;
+        background: radial-gradient( circle, rgba(139,92,246,0.17) 0%, rgba(34,211,238,0.055) 38%, transparent 70% );
+        opacity: 0;
+        animation: fuelSplashGlow 1100ms 120ms cubic-bezier(.2,.8,.2,1) forwards;
+        pointer-events: none;
+    }
+
+
+/* ---------------------------------------------------------
+   CONTENT
+   --------------------------------------------------------- */
+
+.fuel-startup-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(-12px);
+}
+
+
+/* ---------------------------------------------------------
+   LOGO WRAPPER
+   --------------------------------------------------------- */
+
+.fuel-startup-logo {
+    position: relative;
+    width: 92px;
+    height: 92px;
+    display: grid;
+    place-items: center;
+}
+
+
+/* Glow behind pump */
+
+.fuel-startup-logo-glow {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient( circle, rgba(139,92,246,0.32), rgba(34,211,238,0.08) 48%, transparent 72% );
+    opacity: 0;
+    transform: scale(0.4);
+    animation: fuelLogoGlow 950ms 250ms cubic-bezier(.18,.89,.32,1.2) forwards;
+}
+
+
+/* ---------------------------------------------------------
+   FUEL PUMP
+   --------------------------------------------------------- */
+
+.fuel-startup-pump {
+    position: relative;
+    width: 67px;
+    height: 67px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid rgba(139,92,246,0.30);
+    border-radius: 21px;
+    color: white;
+    background: linear-gradient( 145deg, rgba(139,92,246,0.24), rgba(37,99,235,0.17) ), rgba(14,18,37,0.96);
+    box-shadow: 0 15px 45px rgba(0,0,0,0.35), 0 0 0 rgba(139,92,246,0);
+    opacity: 0;
+    transform: translateY(18px) scale(0.55) rotate(-5deg);
+    animation: fuelPumpEnter 650ms 100ms cubic-bezier(.18,.89,.32,1.4) forwards;
+}
+
+    .fuel-startup-pump svg {
+        position: relative;
+        z-index: 2;
+        width: 35px;
+        height: 35px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* Light sweep through pump */
+
+.fuel-startup-pump-shine {
+    position: absolute;
+    top: -30%;
+    left: -80%;
+    width: 35%;
+    height: 160%;
+    transform: rotate(24deg);
+    background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.40), transparent );
+    animation: fuelPumpShine 650ms 620ms ease forwards;
+}
+
+
+/* ---------------------------------------------------------
+   BRAND
+   --------------------------------------------------------- */
+
+.fuel-startup-brand {
+    margin-top: 0.75rem;
+    opacity: 0;
+    transform: translateY(9px) scale(0.97);
+    animation: fuelBrandEnter 450ms 430ms cubic-bezier(.2,.8,.2,1) forwards;
+    font-size: 1.75rem;
+    font-weight: 850;
+    letter-spacing: -0.055em;
+}
+
+    .fuel-startup-brand span {
+        color: #f7f8ff;
+    }
+
+    .fuel-startup-brand strong {
+        color: transparent;
+        background: linear-gradient( 100deg, #a855f7, #7c5cff, #22d3ee );
+        -webkit-background-clip: text;
+        background-clip: text;
+        font-weight: 850;
+    }
+
+
+/* ---------------------------------------------------------
+   TAGLINE
+   --------------------------------------------------------- */
+
+.fuel-startup-tagline {
+    margin-top: 0.22rem;
+    color: #737b99;
+    opacity: 0;
+    font-size: 0.53rem;
+    font-weight: 800;
+    letter-spacing: 0.24em;
+    transform: translateY(5px);
+    animation: fuelTaglineEnter 350ms 620ms ease forwards;
+}
+
+
+/* ---------------------------------------------------------
+   LOADER
+   --------------------------------------------------------- */
+
+.fuel-startup-loader {
+    width: 115px;
+    height: 3px;
+    margin-top: 1.15rem;
+    overflow: hidden;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.055);
+    opacity: 0;
+    animation: fuelLoaderAppear 200ms 650ms ease forwards;
+}
+
+.fuel-startup-loader-fill {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient( 90deg, #8b5cf6, #3b82f6, #22d3ee );
+    box-shadow: 0 0 10px rgba(34,211,238,0.28);
+    animation: fuelLoaderFill 650ms 680ms cubic-bezier(.4,0,.2,1) forwards;
+}
+
+
+/* ---------------------------------------------------------
+   SPLASH EXIT
+   --------------------------------------------------------- */
+
+.fuel-startup-splash-hide {
+    opacity: 0;
+    transform: scale(1.035);
+    filter: blur(4px);
+    pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------
+   ANIMATIONS
+   --------------------------------------------------------- */
+
+@keyframes fuelPumpEnter {
+
+    0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.55) rotate(-5deg);
+        box-shadow: 0 15px 45px rgba(0,0,0,0.35), 0 0 0 rgba(139,92,246,0);
+    }
+
+    68% {
+        opacity: 1;
+        transform: translateY(-3px) scale(1.07) rotate(1deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0);
+        box-shadow: 0 15px 45px rgba(0,0,0,0.35), 0 0 28px rgba(139,92,246,0.16);
+    }
+}
+
+
+@keyframes fuelLogoGlow {
+
+    from {
+        opacity: 0;
+        transform: scale(0.4);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.45);
+    }
+}
+
+
+@keyframes fuelSplashGlow {
+
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+
+@keyframes fuelPumpShine {
+
+    from {
+        left: -80%;
+    }
+
+    to {
+        left: 150%;
+    }
+}
+
+
+@keyframes fuelBrandEnter {
+
+    from {
+        opacity: 0;
+        transform: translateY(9px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+@keyframes fuelTaglineEnter {
+
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes fuelLoaderAppear {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+@keyframes fuelLoaderFill {
+
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .fuel-startup-pump,
+    .fuel-startup-logo-glow,
+    .fuel-startup-splash::before,
+    .fuel-startup-brand,
+    .fuel-startup-tagline,
+    .fuel-startup-loader,
+    .fuel-startup-loader-fill {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - SETTINGS MENU
+   ========================================================= */
+
+.fuel-header {
+    position: relative;
+    z-index: 50;
+}
+
+.fuel-settings-wrapper {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+
+/* KUGGHJUL */
+
+.fuel-settings-button {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    color: #aeb5cc;
+    background: linear-gradient( 145deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02) ), rgba(14,18,37,0.85);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 150ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms ease;
+}
+
+    .fuel-settings-button svg {
+        width: 21px;
+        height: 21px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: transform 300ms cubic-bezier(.18,.89,.32,1.3);
+    }
+
+    .fuel-settings-button:hover {
+        color: #cbbcff;
+        border-color: rgba(139,92,246,0.20);
+        background: rgba(139,92,246,0.08);
+        box-shadow: 0 0 22px rgba(139,92,246,0.07);
+    }
+
+        .fuel-settings-button:hover svg {
+            transform: rotate(25deg);
+        }
+
+    .fuel-settings-button:active {
+        transform: scale(0.90);
+    }
+
+        .fuel-settings-button:active svg {
+            transform: rotate(55deg);
+        }
+
+
+/* MENYN */
+
+.fuel-settings-menu {
+    position: absolute;
+    top: calc(100% + 9px);
+    right: 0;
+    width: 255px;
+    overflow: hidden;
+    padding: 0.45rem;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 17px;
+    background: linear-gradient( 145deg, rgba(27,32,59,0.98), rgba(13,17,35,0.98) );
+    box-shadow: 0 22px 55px rgba(0,0,0,0.42), 0 0 30px rgba(139,92,246,0.05), inset 0 1px 0 rgba(255,255,255,0.055);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transform-origin: top right;
+    animation: fuelSettingsOpen 220ms cubic-bezier(.18,.89,.32,1.18) both;
+}
+
+
+    /* LITEN GRADIENTLINJE */
+
+    .fuel-settings-menu::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 18px;
+        right: 18px;
+        height: 1px;
+        background: linear-gradient( 90deg, transparent, rgba(139,92,246,0.65), rgba(34,211,238,0.55), transparent );
+    }
+
+
+/* INSTÄLLNINGAR-TEXT */
+
+.fuel-settings-menu-header {
+    padding: 0.55rem 0.6rem 0.38rem;
+    color: #727a97;
+    font-size: 0.53rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+
+/* BACKUP-KNAPPEN */
+
+.fuel-settings-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.7rem;
+    border: 0;
+    border-radius: 12px;
+    color: var(--fuel-text);
+    background: transparent;
+    text-align: left;
+    transition: background 160ms ease, transform 130ms ease;
+}
+
+    .fuel-settings-menu-item:hover {
+        background: linear-gradient( 100deg, rgba(139,92,246,0.09), rgba(34,211,238,0.04) );
+    }
+
+    .fuel-settings-menu-item:active {
+        transform: scale(0.97);
+    }
+
+
+/* BACKUP-IKON */
+
+.fuel-settings-menu-icon {
+    flex: 0 0 auto;
+    width: 37px;
+    height: 37px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    color: #c7b7ff;
+    background: linear-gradient( 145deg, rgba(139,92,246,0.15), rgba(34,211,238,0.07) );
+}
+
+    .fuel-settings-menu-icon svg {
+        width: 19px;
+        height: 19px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* TEXT */
+
+.fuel-settings-menu-text {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+    .fuel-settings-menu-text strong {
+        color: #e9ebf5;
+        font-size: 0.69rem;
+        font-weight: 750;
+    }
+
+    .fuel-settings-menu-text small {
+        margin-top: 0.08rem;
+        color: #777f9a;
+        font-size: 0.55rem;
+    }
+
+
+/* PILEN */
+
+.fuel-settings-menu-arrow {
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+    color: #747c96;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 160ms ease, color 160ms ease;
+}
+
+.fuel-settings-menu-item:hover
+.fuel-settings-menu-arrow {
+    color: #a994ff;
+    transform: translateX(2px);
+}
+
+
+/* MENYN ÖPPNAS */
+
+@keyframes fuelSettingsOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - UNIFIED PAGE SLIDE
+   ========================================================= */
+
+/* Stäng av gamla animationer på själva sid-wrappers */
+.home-page,
+.fuel-add-page,
+.fuel-form-page,
+.fuel-history-page,
+.fuel-cars-page,
+.fuel-backup-page {
+    animation: none !important;
+}
+
+
+/* Alla sidor får EXAKT samma animation */
+.app-content > * {
+    animation: fuelUnifiedPageSlide 320ms cubic-bezier(.22, .85, .32, 1) both !important;
+    will-change: transform, opacity;
+}
+
+
+@keyframes fuelUnifiedPageSlide {
+
+    0% {
+        opacity: 0;
+        transform: translateX(52px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+/* Tillgänglighet */
+@media (prefers-reduced-motion: reduce) {
+
+    .app-content > * {
+        animation: none !important;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - CARD SLIDE POLISH
+   Kort/rutor kommer in tydligare efter själva sidan
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   GEMENSAM KORT-ANIMATION
+   --------------------------------------------------------- */
+
+@keyframes fuelCardSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(42px) scale(0.985);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+.fuel-home .fuel-stat-card,
+.fuel-home .fuel-main-action,
+.fuel-home .fuel-latest-card,
+.fuel-home .fuel-empty-card,
+.fuel-home .fuel-secondary-action {
+    animation: fuelCardSlideIn 360ms cubic-bezier(.22,.85,.32,1) both !important;
+}
+
+
+    /* Statistik */
+    .fuel-home .fuel-stat-card:nth-child(1) {
+        animation-delay: 70ms !important;
+    }
+
+    .fuel-home .fuel-stat-card:nth-child(2) {
+        animation-delay: 110ms !important;
+    }
+
+
+/* Ny tankning */
+.fuel-home .fuel-main-action {
+    animation-delay: 140ms !important;
+}
+
+
+/* Senaste tankningen */
+.fuel-home .fuel-latest-card,
+.fuel-home .fuel-empty-card {
+    animation-delay: 180ms !important;
+}
+
+
+/* Mina bilar */
+.fuel-home .fuel-secondary-action {
+    animation-delay: 220ms !important;
+}
+
+
+/* =========================================================
+   NY TANKNING
+   ========================================================= */
+
+.fuel-form-page .fuel-form-card,
+.fuel-add-page .fuel-form-card,
+.fuel-form-page .fuel-live-price,
+.fuel-add-page .fuel-live-price {
+    animation: fuelCardSlideIn 360ms cubic-bezier(.22,.85,.32,1) both !important;
+}
+
+.fuel-form-page .fuel-form-card,
+.fuel-add-page .fuel-form-card {
+    animation-delay: 80ms !important;
+}
+
+.fuel-form-page .fuel-live-price,
+.fuel-add-page .fuel-live-price {
+    animation-delay: 140ms !important;
+}
+
+
+/* =========================================================
+   HISTORIK
+   ========================================================= */
+
+.fuel-history-page .fuel-month-picker,
+.fuel-history-page .fuel-history-filter,
+.fuel-history-page .fuel-history-stat,
+.fuel-history-page .fuel-history-entry,
+.fuel-history-page .fuel-history-empty {
+    animation: fuelCardSlideIn 360ms cubic-bezier(.22,.85,.32,1) both !important;
+}
+
+
+/* Månadsväljare */
+.fuel-history-page .fuel-month-picker {
+    animation-delay: 60ms !important;
+}
+
+
+/* Bilfilter */
+.fuel-history-page .fuel-history-filter {
+    animation-delay: 90ms !important;
+}
+
+
+/* Statistik - kommer efter varandra */
+
+.fuel-history-page .fuel-history-stat:nth-child(1) {
+    animation-delay: 110ms !important;
+}
+
+.fuel-history-page .fuel-history-stat:nth-child(2) {
+    animation-delay: 140ms !important;
+}
+
+.fuel-history-page .fuel-history-stat:nth-child(3) {
+    animation-delay: 170ms !important;
+}
+
+.fuel-history-page .fuel-history-stat:nth-child(4) {
+    animation-delay: 200ms !important;
+}
+
+
+/* Tankningskort */
+.fuel-history-page .fuel-history-entry {
+    animation-delay: 220ms !important;
+}
+
+
+/* =========================================================
+   BILAR
+   ========================================================= */
+
+.fuel-cars-page .fuel-car-form,
+.fuel-cars-page .fuel-car-card,
+.fuel-cars-page .fuel-cars-empty {
+    animation: fuelCardSlideIn 360ms cubic-bezier(.22,.85,.32,1) both !important;
+}
+
+
+/* Lägg till bil */
+.fuel-cars-page .fuel-car-form {
+    animation-delay: 70ms !important;
+}
+
+
+/* Bilkort */
+.fuel-cars-page .fuel-car-card {
+    animation-delay: 150ms !important;
+}
+
+
+/* Tomt garage */
+.fuel-cars-page .fuel-cars-empty {
+    animation-delay: 150ms !important;
+}
+
+
+/* =========================================================
+   BACKUP
+   ========================================================= */
+
+.fuel-backup-page .fuel-backup-info,
+.fuel-backup-page .fuel-backup-card {
+    animation: fuelCardSlideIn 360ms cubic-bezier(.22,.85,.32,1) both !important;
+}
+
+
+/* Din data */
+.fuel-backup-page .fuel-backup-info {
+    animation-delay: 60ms !important;
+}
+
+
+/* Exportera */
+.fuel-backup-page .fuel-backup-card:nth-of-type(1) {
+    animation-delay: 110ms !important;
+}
+
+
+/* Återställ */
+.fuel-backup-page .fuel-backup-card:nth-of-type(2) {
+    animation-delay: 170ms !important;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .fuel-home .fuel-stat-card,
+    .fuel-home .fuel-main-action,
+    .fuel-home .fuel-latest-card,
+    .fuel-home .fuel-empty-card,
+    .fuel-home .fuel-secondary-action,
+    .fuel-form-page .fuel-form-card,
+    .fuel-add-page .fuel-form-card,
+    .fuel-form-page .fuel-live-price,
+    .fuel-add-page .fuel-live-price,
+    .fuel-history-page .fuel-month-picker,
+    .fuel-history-page .fuel-history-filter,
+    .fuel-history-page .fuel-history-stat,
+    .fuel-history-page .fuel-history-entry,
+    .fuel-history-page .fuel-history-empty,
+    .fuel-cars-page .fuel-car-form,
+    .fuel-cars-page .fuel-car-card,
+    .fuel-cars-page .fuel-cars-empty,
+    .fuel-backup-page .fuel-backup-info,
+    .fuel-backup-page .fuel-backup-card {
+        animation: none !important;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - BUTTON PRESS FEEDBACK
+   ========================================================= */
+
+/* Alla riktiga knappar */
+button {
+    transition: transform 120ms cubic-bezier(.2,.8,.2,1), filter 140ms ease, box-shadow 160ms ease;
+}
+
+
+    /* När knappen trycks */
+    button:active {
+        transform: scale(0.94) translateY(1px) !important;
+        filter: brightness(1.14);
+    }
+
+
+/* Stora huvudknappar får lite tydligare respons */
+.fuel-main-action:active,
+.fuel-add-car-button:active,
+.fuel-backup-export-button:active {
+    transform: scale(0.965) translateY(2px) !important;
+    filter: brightness(1.12) saturate(1.12);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.28), 0 0 24px rgba(139,92,246,0.16) !important;
+}
+
+
+/* Ikoner reagerar lite när man trycker */
+button:active svg {
+    transform: scale(0.90);
+}
+
+
+/* Bottom navigation */
+.bottom-nav-item {
+    transition: transform 130ms cubic-bezier(.2,.8,.2,1), background 180ms ease, color 180ms ease;
+}
+
+    .bottom-nav-item:active {
+        transform: scale(0.90);
+    }
+
+        .bottom-nav-item:active .bottom-nav-icon {
+            transform: scale(0.88);
+        }
+
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+    button:active,
+    .fuel-main-action:active,
+    .fuel-add-car-button:active,
+    .fuel-backup-export-button:active,
+    .bottom-nav-item:active {
+        transform: none !important;
+    }
+}
+
+/* =========================================================
+   FUELTRACKER - TYPOGRAPHY
+   ========================================================= */
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+/* Rubriker */
+h1,
+h2,
+h3,
+.fuel-logo {
+    font-weight: 700;
+    letter-spacing: -0.035em;
+}
+
+/* Stora siffror/statistik */
+.fuel-stat-value,
+.fuel-price,
+.fuel-history-stat-value {
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Mindre labels */
+.fuel-section-label,
+.fuel-stat-label {
+    letter-spacing: 0.04em;
+}
