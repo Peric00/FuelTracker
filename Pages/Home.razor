@@ -38,7 +38,15 @@
             </div>
         </div>
 
+        <!-- Grupp -->
+        <button class="fuel-group-header-button"
+                @onclick="GoToGroup"
+                aria-label="Grupp">
 
+            <span class="fuel-group-header-icon">👥</span>
+            <span>Grupp</span>
+
+        </button>
         <!-- Inställningar -->
         <div class="fuel-settings-wrapper">
 
@@ -478,6 +486,11 @@
     private void GoToCars()
     {
         Navigation.NavigateTo("/cars");
+    }
+
+    private void GoToGroup()
+    {
+        Navigation.NavigateTo("/group");
     }
 
     private void ToggleSettings()

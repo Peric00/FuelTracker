@@ -4826,3 +4826,300 @@ h3,
     overflow: hidden !important;
     -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
+
+/* =========================================
+   FUELTRACKER – GROUP PAGE
+========================================= */
+
+.group-page {
+    padding: 8px 0 35px;
+    animation: groupFadeIn 0.35s ease;
+}
+
+/* Hero */
+
+.group-hero {
+    text-align: center;
+    padding: 18px 12px 28px;
+}
+
+.group-icon {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    border-radius: 24px;
+    background: linear-gradient( 135deg, rgba(139, 92, 246, 0.24), rgba(34, 211, 238, 0.12) );
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 35px rgba(139, 92, 246, 0.12);
+}
+
+.group-hero h1 {
+    color: var(--fuel-text);
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.8px;
+}
+
+.group-hero p {
+    color: var(--fuel-muted);
+    font-size: 14px;
+    line-height: 1.65;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+/* Option cards */
+
+.group-options {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.group-option-card {
+    width: 100%;
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 19px;
+    text-align: left;
+    color: var(--fuel-text);
+    background: var(--fuel-surface);
+    border: 1px solid var(--fuel-border);
+    border-radius: var(--fuel-radius);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .group-option-card:active {
+        transform: scale(0.975);
+    }
+
+.group-create {
+    border-color: rgba(139, 92, 246, 0.24);
+}
+
+.group-join {
+    border-color: rgba(34, 211, 238, 0.18);
+}
+
+.group-create:hover {
+    border-color: var(--fuel-purple);
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.1);
+}
+
+.group-join:hover {
+    border-color: var(--fuel-cyan);
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.08);
+}
+
+.group-option-icon {
+    flex-shrink: 0;
+    width: 49px;
+    height: 49px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.group-create .group-option-icon {
+    color: #c4b5fd;
+    background: rgba(139, 92, 246, 0.18);
+}
+
+.group-join .group-option-icon {
+    color: var(--fuel-cyan);
+    background: rgba(34, 211, 238, 0.12);
+}
+
+.group-option-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .group-option-text strong {
+        font-size: 15px;
+        font-weight: 750;
+    }
+
+    .group-option-text span {
+        color: var(--fuel-muted);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+.group-option-arrow {
+    color: var(--fuel-muted);
+    font-size: 28px;
+    font-weight: 300;
+}
+
+/* Forms */
+
+.group-form-card {
+    padding: 23px 20px;
+    border-radius: var(--fuel-radius);
+    background: var(--fuel-surface);
+    border: 1px solid rgba(139, 92, 246, 0.22);
+    animation: groupFadeIn 0.3s ease;
+}
+
+.group-form-heading {
+    margin-bottom: 23px;
+}
+
+    .group-form-heading h2 {
+        color: var(--fuel-text);
+        font-size: 21px;
+        font-weight: 750;
+        margin-bottom: 7px;
+    }
+
+    .group-form-heading p {
+        color: var(--fuel-muted);
+        font-size: 13px;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+.group-form-card label {
+    display: block;
+    color: var(--fuel-text);
+    font-size: 13px;
+    font-weight: 650;
+    margin: 17px 0 8px;
+}
+
+.group-form-card .form-control {
+    width: 100%;
+    min-height: 51px;
+    padding: 12px 15px;
+    border-radius: 13px;
+    color: var(--fuel-text);
+    background: rgba(8, 11, 24, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    font-size: 15px;
+    outline: none;
+    box-shadow: none;
+}
+
+    .group-form-card .form-control:focus {
+        color: white;
+        background: rgba(8, 11, 24, 0.9);
+        border-color: var(--fuel-purple);
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+    }
+
+    .group-form-card .form-control::placeholder {
+        color: #626a88;
+    }
+
+.group-code-input {
+    font-size: 24px !important;
+    font-weight: 750;
+    letter-spacing: 7px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Primary action */
+
+.group-primary-button {
+    display: block;
+    width: 100%;
+    min-height: 53px;
+    margin-top: 25px;
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+    background: linear-gradient( 110deg, var(--fuel-purple), var(--fuel-blue) );
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+    transition: transform 0.2s ease;
+}
+
+    .group-primary-button:active {
+        transform: scale(0.97);
+    }
+
+/* Animation */
+
+@keyframes groupFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(9px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   FUELTRACKER – GROUP HEADER BUTTON
+========================================= */
+
+.fuel-group-header-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 42px;
+    padding: 0 12px;
+    margin-left: auto;
+    color: var(--fuel-text);
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+    .fuel-group-header-button:hover {
+        background: rgba(139, 92, 246, 0.18);
+        border-color: rgba(139, 92, 246, 0.5);
+    }
+
+    .fuel-group-header-button:active {
+        transform: scale(0.95);
+    }
+
+.fuel-group-header-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.fuel-header {
+    gap: 8px;
+}
+
+@media (max-width: 380px) {
+    .fuel-group-header-button {
+        padding: 0 9px;
+    }
+
+        .fuel-group-header-button span:last-child {
+            display: none;
+        }
+
+    .fuel-group-header-icon {
+        font-size: 18px;
+    }
+}
