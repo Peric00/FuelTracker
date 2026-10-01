@@ -1,0 +1,50 @@
+﻿@if (isVisible)
+{
+    <div class="fuel-toast-success @(isLeaving ? "fuel-toast-leaving" : "")">
+        <div class="fuel-toast-icon">✓</div>
+
+        <div class="fuel-toast-content">
+            <strong>@Message</strong>
+
+            @if (!string.IsNullOrWhiteSpace(Description))
+            {
+                <span>@Description</span>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Message { get; set; } = "";
+
+    [Parameter]
+    public string Description { get; set; } = "";
+
+    [Parameter]
+    public int Duration { get; set; } = 3000;
+
+    private bool isVisible;
+    private bool isLeaving;
+
+    public async Task ShowAsync()
+    {
+        isLeaving = false;
+        isVisible = true;
+
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(Duration);
+
+        isLeaving = true;
+
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(350);
+
+        isVisible = false;
+        isLeaving = false;
+
+        await InvokeAsync(StateHasChanged);
+    }
+}

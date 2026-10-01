@@ -44,7 +44,7 @@
                 aria-label="Grupp">
 
             <span class="fuel-group-header-icon">👥</span>
-            <span>Grupp</span>
+            <span>@(isInGroup ? "Min grupp" : "Grupp")</span>
 
         </button>
         <!-- Inställningar -->
@@ -407,6 +407,7 @@
 
     private Guid? entryToDelete;
     private bool showSettings = false;
+    private bool isInGroup = false;
 
     private CultureInfo SwedishCulture =>
         CultureInfo.GetCultureInfo("sv-SE");
@@ -449,6 +450,12 @@
         fuelEntries =
             await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
             ?? new List<FuelEntry>();
+
+        var groupToken =
+            await Storage.LoadAsync<string>("groupToken");
+
+        isInGroup =
+            !string.IsNullOrWhiteSpace(groupToken);
     }
 
     private void AskToDelete(FuelEntry entry)

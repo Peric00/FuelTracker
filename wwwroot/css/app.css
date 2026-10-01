@@ -5123,3 +5123,19 @@ h3,
         font-size: 18px;
     }
 }
+
+.fuel-toast-success.fuel-toast-leaving {
+    animation: fuelToastOut 0.35s cubic-bezier(.4, 0, 1, 1) forwards;
+}
+
+@keyframes fuelToastOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, -14px) scale(0.97);
+    }
+}

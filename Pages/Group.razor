@@ -21,103 +21,155 @@
         </p>
     </div>
 
-    <div class="group-options">
 
-        <button class="group-option-card group-create"
-                @onclick="ShowCreateGroup">
-
-            <div class="group-option-icon">＋</div>
-
-            <div class="group-option-text">
-                <strong>Skapa grupp</strong>
-                <span>Starta en ny grupp och bjud in andra.</span>
-            </div>
-
-            <div class="group-option-arrow">›</div>
-        </button>
-
-        <button class="group-option-card group-join"
-                @onclick="ShowJoinGroup">
-
-            <div class="group-option-icon">#</div>
-
-            <div class="group-option-text">
-                <strong>Gå med i grupp</strong>
-                <span>Använd en 6-siffrig gruppkod.</span>
-            </div>
-
-            <div class="group-option-arrow">›</div>
-        </button>
-
-    </div>
-
-
-    @if (mode == "create")
+    @if (isCheckingGroup)
     {
         <div class="group-form-card">
 
             <div class="group-form-heading">
-                <h2>Skapa grupp</h2>
-                <p>Ge gruppen ett namn och skriv ditt namn.</p>
+                <h2>Hämtar din grupp...</h2>
+                <p>Kontrollerar ditt medlemskap.</p>
             </div>
-
-            <label>Gruppnamn</label>
-            <input class="form-control"
-                   placeholder="T.ex. Familjen Peric"
-                   @bind="groupName" />
-
-            <label>Ditt namn</label>
-            <input class="form-control"
-                   placeholder="T.ex. Emil"
-                   @bind="memberName" />
-
-            <button class="group-primary-button"
-                    @onclick="CreateGroup"
-                    disabled="@isLoading">
-                @(isLoading ? "Skapar..." : "Skapa grupp")
-            </button>
-
-            @if (!string.IsNullOrWhiteSpace(errorMessage))
-            {
-                <p class="group-error-message">
-                    @errorMessage
-                </p>
-            }
 
         </div>
     }
-
-
-    @if (mode == "join")
-    {
+    else if (currentGroup != null && currentMember != null)
+    { 
+        <SuccessToast @ref="successToast"
+                      Message="Gruppen är skapad!"
+                      Description="Du kan nu bjuda in andra med gruppkoden." />
         <div class="group-form-card">
 
             <div class="group-form-heading">
-                <h2>Gå med i grupp</h2>
-                <p>Skriv gruppens 6-siffriga kod och ditt namn.</p>
+                <h2>@currentGroup.Name</h2>
+                <p>
+                    Du är med i gruppen som @currentMember.Name.
+                </p>
             </div>
 
             <label>Gruppkod</label>
-            <input class="form-control group-code-input"
-                   type="text"
-                   inputmode="numeric"
-                   maxlength="6"
-                   placeholder="000000"
-                   @bind="joinCode" />
 
-            <label>Ditt namn</label>
-            <input class="form-control"
-                   placeholder="T.ex. Emil"
-                   @bind="memberName" />
+            <div class="group-code-input form-control">
+                @currentGroup.JoinCode
+            </div>
 
-            <button class="group-primary-button">
-                Gå med i grupp
-            </button>
+            <p style="color: var(--fuel-muted); margin-top: 14px;">
+                Dela den 6-siffriga koden med familjemedlemmar
+                så att de kan gå med i gruppen.
+            </p>
 
         </div>
     }
+    else
+    {
+        <div class="group-options">
+
+            <button class="group-option-card group-create"
+                    @onclick="ShowCreateGroup">
+
+                <div class="group-option-icon">＋</div>
+
+                <div class="group-option-text">
+                    <strong>Skapa grupp</strong>
+                    <span>Starta en ny grupp och bjud in andra.</span>
+                </div>
+
+                <div class="group-option-arrow">›</div>
+
+            </button>
+
+
+            <button class="group-option-card group-join"
+                    @onclick="ShowJoinGroup">
+
+                <div class="group-option-icon">#</div>
+
+                <div class="group-option-text">
+                    <strong>Gå med i grupp</strong>
+                    <span>Använd en 6-siffrig gruppkod.</span>
+                </div>
+
+                <div class="group-option-arrow">›</div>
+
+            </button>
+
+        </div>
+
+
+        @if (mode == "create")
+        {
+            <div class="group-form-card">
+
+                <div class="group-form-heading">
+                    <h2>Skapa grupp</h2>
+                    <p>Ge gruppen ett namn och skriv ditt namn.</p>
+                </div>
+
+                <label>Gruppnamn</label>
+
+                <input class="form-control"
+                       placeholder="T.ex. Familjen Peric"
+                       @bind="groupName" />
+
+                <label>Ditt namn</label>
+
+                <input class="form-control"
+                       placeholder="T.ex. Emil"
+                       @bind="memberName" />
+
+                <button class="group-primary-button"
+                        @onclick="CreateGroup"
+                        disabled="@isLoading">
+
+                    @(isLoading ? "Skapar..." : "Skapa grupp")
+
+                </button>
+
+                @if (!string.IsNullOrWhiteSpace(errorMessage))
+                {
+                    <p class="group-error-message">
+                        @errorMessage
+                    </p>
+                }
+
+            </div>
+        }
+
+
+        @if (mode == "join")
+        {
+            <div class="group-form-card">
+
+                <div class="group-form-heading">
+                    <h2>Gå med i grupp</h2>
+                    <p>Skriv gruppens 6-siffriga kod och ditt namn.</p>
+                </div>
+
+                <label>Gruppkod</label>
+
+                <input class="form-control group-code-input"
+                       type="text"
+                       inputmode="numeric"
+                       maxlength="6"
+                       placeholder="000000"
+                       @bind="joinCode" />
+
+                <label>Ditt namn</label>
+
+                <input class="form-control"
+                       placeholder="T.ex. Emil"
+                       @bind="memberName" />
+
+                <button class="group-primary-button">
+                    Gå med i grupp
+                </button>
+
+            </div>
+        }
+    }
 
 </div>
+
 
 @code {
     private string? mode;
@@ -128,6 +180,71 @@
 
     private bool isLoading = false;
     private string errorMessage = "";
+    private SuccessToast? successToast;
+
+    private bool isCheckingGroup = true;
+
+    private GroupInfo? currentGroup;
+    private MemberInfo? currentMember;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var token =
+                await Storage.LoadAsync<string>("groupToken");
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return;
+            }
+
+            using var request =
+                new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "api/me");
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    token);
+
+            var response =
+                await Http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                await Storage.SaveAsync<string?>(
+                    "groupToken",
+                    null);
+
+                return;
+            }
+
+            var result =
+                await response.Content.ReadFromJsonAsync<GroupResponse>();
+
+            if (result != null &&
+                result.Success &&
+                result.Group != null &&
+                result.Member != null)
+            {
+                currentGroup = result.Group;
+                currentMember = result.Member;
+            }
+        }
+        catch
+        {
+            errorMessage =
+                "Kunde inte hämta gruppinformationen.";
+        }
+        finally
+        {
+            isCheckingGroup = false;
+        }
+    }
+
 
     private void ShowCreateGroup()
     {
@@ -135,20 +252,26 @@
         errorMessage = "";
     }
 
+
     private void ShowJoinGroup()
     {
         mode = "join";
         errorMessage = "";
     }
 
+
     private async Task CreateGroup()
     {
+
+
         errorMessage = "";
 
         if (string.IsNullOrWhiteSpace(groupName) ||
             string.IsNullOrWhiteSpace(memberName))
         {
-            errorMessage = "Fyll i gruppnamn och ditt namn.";
+            errorMessage =
+                "Fyll i gruppnamn och ditt namn.";
+
             return;
         }
 
@@ -156,13 +279,14 @@
 
         try
         {
-            var response = await Http.PostAsJsonAsync(
-                "api/groups-create",
-                new
-                {
-                    groupName = groupName.Trim(),
-                    memberName = memberName.Trim()
-                });
+            var response =
+                await Http.PostAsJsonAsync(
+                    "api/groups-create",
+                    new
+                    {
+                        groupName = groupName.Trim(),
+                        memberName = memberName.Trim()
+                    });
 
             var result =
                 await response.Content.ReadFromJsonAsync<GroupResponse>();
@@ -172,7 +296,8 @@
                 !result.Success)
             {
                 errorMessage =
-                    result?.Error ?? "Kunde inte skapa gruppen.";
+                    result?.Error ??
+                    "Kunde inte skapa gruppen.";
 
                 return;
             }
@@ -181,11 +306,22 @@
                 "groupToken",
                 result.Token);
 
+            currentGroup = result.Group;
+            currentMember = result.Member;
+
             mode = null;
+
+            if (successToast != null)
+            {
+                _ = successToast.ShowAsync();
+            }
+
+           
         }
         catch
         {
-            errorMessage = "Kunde inte ansluta till servern.";
+            errorMessage =
+                "Kunde inte ansluta till servern.";
         }
         finally
         {
@@ -193,25 +329,36 @@
         }
     }
 
+
+
     private class GroupResponse
     {
         public bool Success { get; set; }
+
         public string? Error { get; set; }
+
         public string Token { get; set; } = "";
+
         public GroupInfo? Group { get; set; }
+
         public MemberInfo? Member { get; set; }
     }
+
 
     private class GroupInfo
     {
         public string Id { get; set; } = "";
+
         public string Name { get; set; } = "";
+
         public string JoinCode { get; set; } = "";
     }
+
 
     private class MemberInfo
     {
         public string Id { get; set; } = "";
+
         public string Name { get; set; } = "";
     }
 }
