@@ -2,6 +2,7 @@
 @using FuelTracker.Models
 @using FuelTracker.Services
 @inject StorageService Storage
+@inject HttpClient Http
 
 <PageTitle>Ny tankning</PageTitle>
 
@@ -76,21 +77,47 @@
                 </label>
 
                 <div class="fuel-input-wrapper">
-                    <select class="fuel-input"
-                            @bind="selectedCarId">
+                    <div class="fuel-custom-select">
 
-                        <option value="">
-                            Välj bil
-                        </option>
+                        <button type="button"
+                                class="fuel-input fuel-custom-select-button"
+                                @onclick="ToggleCarDropdown">
 
-                        @foreach (var car in cars)
+                            <span>@SelectedCarName</span>
+
+                            <span class="fuel-custom-select-arrow @(carDropdownOpen ? "open" : "")">
+                                ⌄
+                            </span>
+
+                        </button>
+
+                        @if (carDropdownOpen)
                         {
-                            <option value="@car.Id">
-                                @car.Name
-                            </option>
+                            <div class="fuel-custom-select-menu">
+
+                                <button type="button"
+                                        class="fuel-custom-select-option"
+                                        @onclick="() => SelectCar(Guid.Empty)">
+
+                                    Välj bil
+
+                                </button>
+
+                                @foreach (var car in cars)
+                                {
+                                    <button type="button"
+                                            class="fuel-custom-select-option @(selectedCarId == car.Id ? "selected" : "")"
+                                            @onclick="() => SelectCar(car.Id)">
+
+                                        @car.Name
+
+                                    </button>
+                                }
+
+                            </div>
                         }
 
-                    </select>
+                    </div>
                 </div>
 
             </div>
@@ -253,26 +280,14 @@
 
         </button>
 
-        @if (saved)
-        {
-            <div class="fuel-saved-message">
-
-                <div class="fuel-saved-check">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="m5 12 4 4L19 6" />
-                    </svg>
-                </div>
-
-                <div>
-                    <strong>Tankning sparad!</strong>
-                    <span>Din statistik har uppdaterats.</span>
-                </div>
-
-            </div>
-        }
+        
     }
 
 </div>
+
+<SuccessToast @ref="successToast"
+              Message="Tankningen är sparad!"
+              Description="Tankningen har lagts till i din historik." />
 
 @code {
     private List<Car> cars = new();
@@ -281,9 +296,32 @@
     private Guid? selectedCarId;
 
     private decimal? liters;
+    private SuccessToast? successToast;
     private decimal? totalCost;
     private string litersInput = "";
     private string totalCostInput = "";
+    private string? groupToken;
+    private bool carDropdownOpen = false;
+
+    private string SelectedCarName
+    {
+        get
+        {
+            var car = cars.FirstOrDefault(c => c.Id == selectedCarId);
+            return car?.Name ?? "Välj bil";
+        }
+    }
+
+    private void ToggleCarDropdown()
+    {
+        carDropdownOpen = !carDropdownOpen;
+    }
+
+    private void SelectCar(Guid carId)
+    {
+        selectedCarId = carId;
+        carDropdownOpen = false;
+    }
 
     private void OnLitersInput(ChangeEventArgs e)
     {
@@ -335,7 +373,7 @@
 
     private DateTime date = DateTime.Today;
 
-    private bool saved = false;
+    
     private string errorMessage = "";
 
     private decimal PricePerLiter =>
@@ -347,13 +385,92 @@
 
     protected override async Task OnInitializedAsync()
     {
-        cars =
-            await Storage.LoadAsync<List<Car>>("cars")
-            ?? new List<Car>();
+        groupToken =
+            await Storage.LoadAsync<string>("groupToken");
 
-        fuelEntries =
-            await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
-            ?? new List<FuelEntry>();
+        if (string.IsNullOrWhiteSpace(groupToken))
+        {
+            cars =
+                await Storage.LoadAsync<List<Car>>("cars")
+                ?? new List<Car>();
+
+            fuelEntries =
+                await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
+                ?? new List<FuelEntry>();
+        }
+        else
+        {
+            try
+            {
+                using var request =
+                    new HttpRequestMessage(
+                        HttpMethod.Get,
+                        "api/cars");
+
+                request.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer",
+                        groupToken);
+
+                var response =
+                    await Http.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result =
+                        await response.Content.ReadFromJsonAsync<CarsResponse>();
+
+                    cars =
+                        result?.Cars
+                        ?? new List<Car>();
+                }
+                else
+                {
+                    cars = new List<Car>();
+
+                    errorMessage =
+                        "Kunde inte hämta gruppens bilar.";
+                }
+            }
+            catch
+            {
+                cars = new List<Car>();
+
+                errorMessage =
+                    "Kunde inte ansluta till servern.";
+            }
+
+            // Gruppens tankningar hämtas senare från /api/fuel-entries.
+            using var fuelRequest =
+    new HttpRequestMessage(
+        HttpMethod.Get,
+        "api/fuel-entries");
+
+            fuelRequest.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            var fuelResponse =
+                await Http.SendAsync(fuelRequest);
+
+            if (fuelResponse.IsSuccessStatusCode)
+            {
+                var fuelResult =
+                    await fuelResponse.Content.ReadFromJsonAsync<FuelEntriesResponse>();
+
+                fuelEntries =
+                    fuelResult?.FuelEntries
+                    ?? new List<FuelEntry>();
+            }
+            else
+            {
+                fuelEntries = new List<FuelEntry>();
+
+                errorMessage =
+                    "Kunde inte hämta gruppens tankningar.";
+            }
+        }
 
         if (cars.Count == 1)
         {
@@ -363,7 +480,6 @@
 
     private async Task SaveFuelEntry()
     {
-        saved = false;
         errorMessage = "";
 
         if (selectedCarId == null)
@@ -393,26 +509,91 @@
             return;
         }
 
-        var entry = new FuelEntry
+        // Om användaren är med i en grupp
+        if (!string.IsNullOrWhiteSpace(groupToken))
         {
-            CarId = selectedCar.Id,
-            CarName = selectedCar.Name,
-            Liters = liters.Value,
-            TotalCost = totalCost.Value,
-            Date = date
-        };
+            try
+            {
+                using var request =
+                    new HttpRequestMessage(
+                        HttpMethod.Post,
+                        "api/fuel-entries");
 
-        fuelEntries.Add(entry);
+                request.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer",
+                        groupToken);
 
-        await Storage.SaveAsync(
-            "fuelEntries",
-            fuelEntries);
+                request.Content =
+                    JsonContent.Create(new
+                    {
+                        carId = selectedCar.Id,
+                        liters = liters.Value,
+                        totalCost = totalCost.Value,
+                        date = date
+                    });
 
+                var response =
+                    await Http.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    errorMessage =
+                        "Kunde inte spara tankningen i gruppen.";
+
+                    return;
+                }
+            }
+            catch
+            {
+                errorMessage =
+                    "Kunde inte ansluta till servern.";
+
+                return;
+            }
+        }
+        else
+        {
+            // Ingen grupp → spara lokalt som tidigare
+            var entry = new FuelEntry
+            {
+                CarId = selectedCar.Id,
+                CarName = selectedCar.Name,
+                Liters = liters.Value,
+                TotalCost = totalCost.Value,
+                Date = date
+            };
+
+            fuelEntries.Add(entry);
+
+            await Storage.SaveAsync(
+                "fuelEntries",
+                fuelEntries);
+        }
+
+        // Rensa formuläret efter lyckad sparning
         liters = null;
         totalCost = null;
         litersInput = "";
         totalCostInput = "";
 
-        saved = true;
+        if (successToast != null)
+        {
+            _ = successToast.ShowAsync();
+        }
+    }
+
+    private class CarsResponse
+    {
+        public bool Success { get; set; }
+
+        public List<Car> Cars { get; set; } = new();
+    }
+
+    private class FuelEntriesResponse
+    {
+        public bool Success { get; set; }
+
+        public List<FuelEntry> FuelEntries { get; set; } = new();
     }
 }

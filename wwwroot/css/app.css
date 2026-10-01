@@ -5139,3 +5139,85 @@ h3,
         transform: translate(-50%, -14px) scale(0.97);
     }
 }
+
+/* =========================================
+   FUELTRACKER – CUSTOM DROPDOWN
+========================================= */
+
+.fuel-custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.fuel-custom-select-button {
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.fuel-custom-select-arrow {
+    margin-left: 12px;
+    font-size: 18px;
+    color: var(--fuel-muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+    .fuel-custom-select-arrow.open {
+        transform: rotate(180deg);
+        color: var(--fuel-purple-bright);
+    }
+
+.fuel-custom-select-menu {
+    position: relative;
+    margin-top: 8px;
+    z-index: 100;
+    overflow: hidden;
+    padding: 6px;
+    background: rgba(14, 18, 37, 0.98);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45), 0 0 25px rgba(139, 92, 246, 0.08);
+    backdrop-filter: blur(18px);
+    animation: fuelDropdownIn 0.2s ease forwards;
+}
+
+.fuel-custom-select-option {
+    width: 100%;
+    padding: 13px 14px;
+    border: 0;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--fuel-text);
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+    .fuel-custom-select-option:hover {
+        background: rgba(139, 92, 246, 0.14);
+    }
+
+    .fuel-custom-select-option.selected {
+        background: rgba(139, 92, 246, 0.2);
+        color: #ffffff;
+    }
+
+    .fuel-custom-select-option:active {
+        transform: scale(0.985);
+    }
+
+@keyframes fuelDropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

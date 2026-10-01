@@ -8,6 +8,8 @@
 
         public string CarName { get; set; } = "";
 
+        public string MemberName { get; set; } = "";
+
         public decimal Liters { get; set; }
 
         public decimal TotalCost { get; set; }

@@ -2,6 +2,8 @@
 @using FuelTracker.Models
 @using FuelTracker.Services
 @inject StorageService Storage
+@using System.Net.Http.Json
+@inject HttpClient Http
 
 <PageTitle>Mina bilar</PageTitle>
 
@@ -140,22 +142,62 @@
 
             </label>
 
-            <div class="fuel-car-input-wrapper">
+            <div class="fuel-custom-select">
 
-                <select class="fuel-car-input"
-                        @bind="fuelType">
+                <button type="button"
+                        class="fuel-car-input fuel-custom-select-button"
+                        @onclick="ToggleFuelTypeDropdown">
 
-                    <option value="">
-                        Välj bränsletyp
-                    </option>
+                    <span>@FuelTypeDisplayName</span>
 
-                    <option value="Bensin">Bensin</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="E85">E85</option>
-                    <option value="El">El</option>
-                    <option value="Hybrid">Hybrid</option>
+                    <span class="fuel-custom-select-arrow @(fuelTypeDropdownOpen ? "open" : "")">
+                        ⌄
+                    </span>
 
-                </select>
+                </button>
+
+                @if (fuelTypeDropdownOpen)
+                {
+                    <div class="fuel-custom-select-menu">
+
+                        <button type="button"
+                                class="fuel-custom-select-option"
+                                @onclick='() => SelectFuelType("")'>
+                            Välj bränsletyp
+                        </button>
+
+                        <button type="button"
+                                class="fuel-custom-select-option @(fuelType == "Bensin" ? "selected" : "")"
+                                @onclick='() => SelectFuelType("Bensin")'>
+                            Bensin
+                        </button>
+
+                        <button type="button"
+                                class="fuel-custom-select-option @(fuelType == "Diesel" ? "selected" : "")"
+                                @onclick='() => SelectFuelType("Diesel")'>
+                            Diesel
+                        </button>
+
+                        <button type="button"
+                                class="fuel-custom-select-option @(fuelType == "E85" ? "selected" : "")"
+                                @onclick='() => SelectFuelType("E85")'>
+                            E85
+                        </button>
+
+                        <button type="button"
+                                class="fuel-custom-select-option @(fuelType == "EL" ? "selected" : "")"
+                                @onclick='() => SelectFuelType("EL")'>
+                            EL
+                        </button>
+
+                        <button type="button"
+                                class="fuel-custom-select-option @(fuelType == "Hybrid" ? "selected" : "")"
+                                @onclick='() => SelectFuelType("Hybrid")'>
+                            Hybrid
+                        </button>
+
+                    </div>
+                }
 
             </div>
 
@@ -363,6 +405,9 @@
 
 </div>
 
+<SuccessToast @ref="successToast"
+              Message="Bilen är sparad!"
+              Description="Bilen har lagts till i din lista." />
 
 @code {
 
@@ -371,17 +416,81 @@
     private string carName = "";
     private string registrationNumber = "";
     private string fuelType = "";
-
+    private SuccessToast? successToast;
     private string errorMessage = "";
+    private string? groupToken;
 
     private Guid? carToDelete;
 
 
+    private bool fuelTypeDropdownOpen = false;
+
+private string FuelTypeDisplayName =>
+    string.IsNullOrWhiteSpace(fuelType)
+        ? "Välj bränsletyp"
+        : fuelType;
+
+private void ToggleFuelTypeDropdown()
+{
+    fuelTypeDropdownOpen = !fuelTypeDropdownOpen;
+}
+
+private void SelectFuelType(string type)
+{
+    fuelType = type;
+    fuelTypeDropdownOpen = false;
+}
+    
+    
     protected override async Task OnInitializedAsync()
     {
-        cars =
-            await Storage.LoadAsync<List<Car>>("cars")
-            ?? new List<Car>();
+        groupToken =
+            await Storage.LoadAsync<string>("groupToken");
+
+        if (string.IsNullOrWhiteSpace(groupToken))
+        {
+            cars =
+                await Storage.LoadAsync<List<Car>>("cars")
+                ?? new List<Car>();
+
+            return;
+        }
+
+        try
+        {
+            using var request =
+                new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "api/cars");
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            var response =
+                await Http.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result =
+                    await response.Content.ReadFromJsonAsync<CarsResponse>();
+
+                cars =
+                    result?.Cars
+                    ?? new List<Car>();
+            }
+            else
+            {
+                errorMessage =
+                    "Kunde inte hämta gruppens bilar.";
+            }
+        }
+        catch
+        {
+            errorMessage =
+                "Kunde inte ansluta till servern.";
+        }
     }
 
 
@@ -413,17 +522,64 @@
             FuelType = fuelType
         };
 
-        cars.Add(car);
+        if (string.IsNullOrWhiteSpace(groupToken))
+        {
+            cars.Add(car);
 
-        await Storage.SaveAsync(
-            "cars",
-            cars);
+            await Storage.SaveAsync(
+                "cars",
+                cars);
+        }
+        else
+        {
+            using var request =
+                new HttpRequestMessage(
+                    HttpMethod.Post,
+                    "api/cars");
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            request.Content =
+                JsonContent.Create(new
+                {
+                    name = car.Name,
+                    registrationNumber = car.RegistrationNumber,
+                    fuelType = car.FuelType
+                });
+
+            var response =
+                await Http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage =
+                    "Kunde inte spara bilen i gruppen.";
+
+                return;
+            }
+
+            var result =
+    await response.Content.ReadFromJsonAsync<CarResponse>();
+
+            if (result?.Car != null)
+            {
+                cars.Add(result.Car);
+            }
+        }
 
         carName = "";
         registrationNumber = "";
         fuelType = "";
 
         carToDelete = null;
+
+        if (successToast != null)
+        {
+            _ = successToast.ShowAsync();
+        }
     }
 
 
@@ -441,13 +597,65 @@
 
     private async Task DeleteCar(Car car)
     {
-        cars.RemoveAll(
-            c => c.Id == car.Id);
+        errorMessage = "";
 
-        await Storage.SaveAsync(
-            "cars",
-            cars);
+        if (string.IsNullOrWhiteSpace(groupToken))
+        {
+            cars.RemoveAll(c => c.Id == car.Id);
 
-        carToDelete = null;
+            await Storage.SaveAsync(
+                "cars",
+                cars);
+
+            carToDelete = null;
+            return;
+        }
+
+        try
+        {
+            using var request =
+                new HttpRequestMessage(
+                    HttpMethod.Delete,
+                    $"api/cars?id={car.Id}");
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            var response =
+                await Http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage =
+                    "Kunde inte ta bort bilen från gruppen.";
+
+                return;
+            }
+
+            cars.RemoveAll(c => c.Id == car.Id);
+
+            carToDelete = null;
+        }
+        catch
+        {
+            errorMessage =
+                "Kunde inte ansluta till servern.";
+        }
+    }
+
+    private class CarsResponse
+    {
+        public bool Success { get; set; }
+
+        public List<Car> Cars { get; set; } = new();
+    }
+
+    private class CarResponse
+    {
+        public bool Success { get; set; }
+
+        public Car? Car { get; set; }
     }
 }

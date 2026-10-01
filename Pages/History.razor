@@ -3,6 +3,8 @@
 @using FuelTracker.Services
 @using System.Globalization
 @inject StorageService Storage
+@using System.Net.Http.Json
+@inject HttpClient Http
 
 <PageTitle>Historik</PageTitle>
 
@@ -83,21 +85,47 @@
 
             </div>
 
-            <select class="fuel-history-select"
-                    @bind="selectedCarId">
+            <div class="fuel-custom-select">
 
-                <option value="">
-                    Alla bilar
-                </option>
+                <button type="button"
+                        class="fuel-history-select fuel-custom-select-button"
+                        @onclick="ToggleHistoryCarDropdown">
 
-                @foreach (var car in cars)
+                    <span>@SelectedHistoryCarName</span>
+
+                    <span class="fuel-custom-select-arrow @(historyCarDropdownOpen ? "open" : "")">
+                        ⌄
+                    </span>
+
+                </button>
+
+                @if (historyCarDropdownOpen)
                 {
-                    <option value="@car.Id">
-                        @car.Name
-                    </option>
+                    <div class="fuel-custom-select-menu">
+
+                        <button type="button"
+                                class="fuel-custom-select-option @(selectedCarId == Guid.Empty ? "selected" : "")"
+                                @onclick="() => SelectHistoryCar(Guid.Empty)">
+
+                            Alla bilar
+
+                        </button>
+
+                        @foreach (var car in cars)
+                        {
+                            <button type="button"
+                                    class="fuel-custom-select-option @(selectedCarId == car.Id ? "selected" : "")"
+                                    @onclick="() => SelectHistoryCar(car.Id)">
+
+                                @car.Name
+
+                            </button>
+                        }
+
+                    </div>
                 }
 
-            </select>
+            </div>
 
         </section>
     }
@@ -364,6 +392,8 @@
     private List<Car> cars = new();
     private List<FuelEntry> fuelEntries = new();
 
+    private string? groupToken;
+
     private Guid? selectedCarId;
     private Guid? entryToDelete;
 
@@ -373,7 +403,33 @@
     private CultureInfo SwedishCulture =>
         CultureInfo.GetCultureInfo("sv-SE");
 
-    private string MonthName
+    private bool historyCarDropdownOpen = false;
+
+private string SelectedHistoryCarName
+{
+    get
+    {
+        if (selectedCarId == Guid.Empty)
+            return "Alla bilar";
+
+        var car = cars.FirstOrDefault(c => c.Id == selectedCarId);
+
+        return car?.Name ?? "Alla bilar";
+    }
+}
+
+private void ToggleHistoryCarDropdown()
+{
+    historyCarDropdownOpen = !historyCarDropdownOpen;
+}
+
+private void SelectHistoryCar(Guid carId)
+{
+    selectedCarId = carId;
+    historyCarDropdownOpen = false;
+}
+        
+        private string MonthName
     {
         get
         {
@@ -412,13 +468,85 @@
 
     protected override async Task OnInitializedAsync()
     {
-        cars =
-            await Storage.LoadAsync<List<Car>>("cars")
-            ?? new List<Car>();
+        groupToken =
+            await Storage.LoadAsync<string>("groupToken");
 
-        fuelEntries =
-            await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
-            ?? new List<FuelEntry>();
+        if (string.IsNullOrWhiteSpace(groupToken))
+        {
+            cars =
+                await Storage.LoadAsync<List<Car>>("cars")
+                ?? new List<Car>();
+
+            fuelEntries =
+                await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
+                ?? new List<FuelEntry>();
+
+            return;
+        }
+
+        try
+        {
+            // Hämta gruppens bilar
+            using var carRequest =
+                new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "api/cars");
+
+            carRequest.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            var carResponse =
+                await Http.SendAsync(carRequest);
+
+            if (carResponse.IsSuccessStatusCode)
+            {
+                var carResult =
+                    await carResponse.Content.ReadFromJsonAsync<CarsResponse>();
+
+                cars =
+                    carResult?.Cars
+                    ?? new List<Car>();
+            }
+            else
+            {
+                cars = new List<Car>();
+            }
+
+            // Hämta gruppens tankningar
+            using var fuelRequest =
+                new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "api/fuel-entries");
+
+            fuelRequest.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            var fuelResponse =
+                await Http.SendAsync(fuelRequest);
+
+            if (fuelResponse.IsSuccessStatusCode)
+            {
+                var fuelResult =
+                    await fuelResponse.Content.ReadFromJsonAsync<FuelEntriesResponse>();
+
+                fuelEntries =
+                    fuelResult?.FuelEntries
+                    ?? new List<FuelEntry>();
+            }
+            else
+            {
+                fuelEntries = new List<FuelEntry>();
+            }
+        }
+        catch
+        {
+            cars = new List<Car>();
+            fuelEntries = new List<FuelEntry>();
+        }
     }
 
     private void PreviousMonth()
@@ -457,5 +585,19 @@
             fuelEntries);
 
         entryToDelete = null;
+    }
+
+    private class CarsResponse
+    {
+        public bool Success { get; set; }
+
+        public List<Car> Cars { get; set; } = new();
+    }
+
+    private class FuelEntriesResponse
+    {
+        public bool Success { get; set; }
+
+        public List<FuelEntry> FuelEntries { get; set; } = new();
     }
 }

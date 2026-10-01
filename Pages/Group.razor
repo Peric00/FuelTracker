@@ -16,7 +16,7 @@
         <h1>Din grupp</h1>
 
         <p>
-            Dela FuelTracker med familjen. Alla i gruppen kan
+            Dela FuelTracker med andra. Alla i gruppen kan
             se samma bilar och tankningar.
         </p>
     </div>
@@ -54,7 +54,7 @@
             </div>
 
             <p style="color: var(--fuel-muted); margin-top: 14px;">
-                Dela den 6-siffriga koden med familjemedlemmar
+                Dela den 6-siffriga koden med andra
                 så att de kan gå med i gruppen.
             </p>
 
@@ -108,7 +108,7 @@
                 <label>Gruppnamn</label>
 
                 <input class="form-control"
-                       placeholder="T.ex. Familjen Peric"
+                       placeholder="T.ex. Bensinligan"
                        @bind="groupName" />
 
                 <label>Ditt namn</label>
@@ -160,8 +160,12 @@
                        placeholder="T.ex. Emil"
                        @bind="memberName" />
 
-                <button class="group-primary-button">
-                    Gå med i grupp
+                <button class="group-primary-button"
+                        @onclick="JoinGroup"
+                        disabled="@isLoading">
+
+                    @(isLoading ? "Går med..." : "Gå med i grupp")
+
                 </button>
 
             </div>
@@ -329,7 +333,79 @@
         }
     }
 
+    private async Task JoinGroup()
+    {
+        errorMessage = "";
 
+        if (string.IsNullOrWhiteSpace(joinCode) ||
+            joinCode.Length != 6 ||
+            !joinCode.All(char.IsDigit))
+        {
+            errorMessage = "Gruppkoden måste vara 6 siffror.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(memberName))
+        {
+            errorMessage = "Skriv ditt namn.";
+            return;
+        }
+
+        isLoading = true;
+
+        try
+        {
+            var response =
+                await Http.PostAsJsonAsync(
+                    "api/groups-join",
+                    new
+                    {
+                        joinCode = joinCode.Trim(),
+                        memberName = memberName.Trim()
+                    });
+
+            var result =
+                await response.Content.ReadFromJsonAsync<GroupResponse>();
+
+            if (!response.IsSuccessStatusCode ||
+                result == null ||
+                !result.Success)
+            {
+                errorMessage =
+                    result?.Error ??
+                    "Kunde inte gå med i gruppen.";
+
+                return;
+            }
+
+            await Storage.SaveAsync(
+                "groupToken",
+                result.Token);
+
+            currentGroup = result.Group;
+            currentMember = result.Member;
+
+            mode = null;
+
+            if (successToast != null)
+            {
+                successToast.Message = "Du är med i gruppen!";
+                successToast.Description =
+                    "Du kan nu se gruppens bilar och tankningar.";
+
+                _ = successToast.ShowAsync();
+            }
+        }
+        catch
+        {
+            errorMessage =
+                "Kunde inte ansluta till servern.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 
     private class GroupResponse
     {
