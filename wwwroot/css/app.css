@@ -5370,3 +5370,38 @@ h3,
     color: var(--fuel-muted);
     font-size: 0.85rem;
 }
+
+.fuel-history-member {
+    display: block;
+    margin-top: 3px;
+    color: var(--fuel-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.fuel-latest-member {
+    display: block;
+    margin-top: 2px;
+    color: var(--fuel-cyan);
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.fuel-toast-success.fuel-toast-danger {
+    border-color: rgba(251, 91, 104, 0.35);
+    background: rgba(45, 14, 24, 0.96);
+    box-shadow: 0 18px 45px rgba(251, 91, 104, 0.18);
+}
+
+    .fuel-toast-success.fuel-toast-danger .fuel-toast-icon {
+        background: rgba(251, 91, 104, 0.16);
+        color: var(--fuel-danger);
+    }
+
+    .fuel-toast-success.fuel-toast-danger .fuel-toast-content strong {
+        color: #ffffff;
+    }
+
+    .fuel-toast-success.fuel-toast-danger .fuel-toast-content span {
+        color: rgba(255, 255, 255, 0.72);
+    }

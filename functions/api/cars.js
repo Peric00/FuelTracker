@@ -189,14 +189,38 @@ export async function onRequestDelete(context) {
                 },
                 { status: 404 }
             );
-        }
+           }
 
-        await context.env.DB
-            .prepare(`
-                DELETE FROM Cars
-                WHERE Id = ?
-                  AND GroupId = ?
-            `)
+    const fuelEntry = await context.env.DB
+        .prepare(`
+            SELECT Id
+            FROM FuelEntries
+            WHERE CarId = ?
+              AND GroupId = ?
+            LIMIT 1
+        `)
+        .bind(
+            carId,
+            auth.groupId
+        )
+        .first();
+
+    if (fuelEntry) {
+        return Response.json(
+            {
+                success: false,
+                error: "Bilen kan inte tas bort eftersom den har registrerade tankningar."
+            },
+            { status: 409 }
+        );
+    }
+
+    await context.env.DB
+        .prepare(`
+            DELETE FROM Cars
+            WHERE Id = ?
+              AND GroupId = ?
+        `)
             .bind(
                 carId,
                 auth.groupId

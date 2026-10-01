@@ -283,6 +283,13 @@
                                 @displayCarName
                             </h3>
 
+                            @if (!string.IsNullOrWhiteSpace(latestEntry.MemberName))
+                            {
+                                <span class="fuel-latest-member">
+                                    Tankat av @latestEntry.MemberName
+                                </span>
+                            }
+
                             <span>
                                 @latestEntry.Date.ToString(
                                     "d MMMM yyyy",
@@ -321,48 +328,7 @@
 
                 </div>
 
-                @if (entryToDelete == latestEntry.Id)
-                {
-                    <div class="fuel-delete-confirm">
-
-                        <strong>
-                            Ta bort tankningen?
-                        </strong>
-
-                        <p>
-                            Tankningen tas bort permanent och statistiken räknas om.
-                        </p>
-
-                        <div class="fuel-confirm-actions">
-
-                            <button class="fuel-danger-button"
-                                    @onclick="() => DeleteFuelEntry(latestEntry)">
-                                Ja, ta bort
-                            </button>
-
-                            <button class="fuel-cancel-button"
-                                    @onclick="CancelDelete">
-                                Avbryt
-                            </button>
-
-                        </div>
-
-                    </div>
-                }
-                else
-                {
-                    <button class="fuel-delete-link"
-                            @onclick="() => AskToDelete(latestEntry)">
-
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M4 7h16" />
-                            <path d="m9 7 1-3h4l1 3" />
-                            <path d="M7 7l1 13h8l1-13" />
-                        </svg>
-
-                        Ta bort tankning
-                    </button>
-                }
+               
 
             </div>
         }
@@ -406,7 +372,6 @@
     private List<Car> cars = new();
     private List<FuelEntry> fuelEntries = new();
 
-    private Guid? entryToDelete;
     private bool showSettings = false;
     private bool isInGroup = false;
 
@@ -522,27 +487,7 @@
         }
     }
 
-    private void AskToDelete(FuelEntry entry)
-    {
-        entryToDelete = entry.Id;
-    }
-
-    private async Task DeleteFuelEntry(FuelEntry entry)
-    {
-        fuelEntries.RemoveAll(
-            e => e.Id == entry.Id);
-
-        await Storage.SaveAsync(
-            "fuelEntries",
-            fuelEntries);
-
-        entryToDelete = null;
-    }
-
-    private void CancelDelete()
-    {
-        entryToDelete = null;
-    }
+   
 
     private void GoToAddFuel()
     {

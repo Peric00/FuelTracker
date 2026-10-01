@@ -9,7 +9,7 @@
 
 <div class="fuel-cars-page">
 
-    <BackButton />
+ 
 
     <!-- Header -->
     <header class="fuel-page-header">
@@ -409,6 +409,16 @@
               Message="Bilen är sparad!"
               Description="Bilen har lagts till i din lista." />
 
+<SuccessToast @ref="errorToast"
+              Message="Kunde inte ta bort bilen"
+              Description="@deleteErrorMessage"
+              Variant="danger" />
+
+<SuccessToast @ref="deleteSuccessToast"
+              Message="Bilen är borttagen"
+              Description="Bilen har tagits bort från gruppen."
+              Variant="danger" />
+
 @code {
 
     private List<Car> cars = new();
@@ -417,7 +427,10 @@
     private string registrationNumber = "";
     private string fuelType = "";
     private SuccessToast? successToast;
+    private SuccessToast? errorToast;
+    private SuccessToast? deleteSuccessToast;
     private string errorMessage = "";
+    private string deleteErrorMessage = "";
     private string? groupToken;
 
     private Guid? carToDelete;
@@ -555,8 +568,19 @@ private void SelectFuelType(string type)
 
             if (!response.IsSuccessStatusCode)
             {
-                errorMessage =
-                    "Kunde inte spara bilen i gruppen.";
+                var errorResult =
+                    await response.Content.ReadFromJsonAsync<ErrorResponse>();
+
+                deleteErrorMessage =
+                    errorResult?.Error
+                    ?? "Kunde inte ta bort bilen från gruppen.";
+
+                carToDelete = null;
+
+                if (errorToast != null)
+                {
+                    _ = errorToast.ShowAsync();
+                }
 
                 return;
             }
@@ -608,6 +632,12 @@ private void SelectFuelType(string type)
                 cars);
 
             carToDelete = null;
+
+            if (deleteSuccessToast != null)
+            {
+                _ = deleteSuccessToast.ShowAsync();
+            }
+
             return;
         }
 
@@ -637,11 +667,22 @@ private void SelectFuelType(string type)
             cars.RemoveAll(c => c.Id == car.Id);
 
             carToDelete = null;
+            if (deleteSuccessToast != null)
+            {
+                _ = deleteSuccessToast.ShowAsync();
+            }
         }
         catch
         {
-            errorMessage =
+            deleteErrorMessage =
                 "Kunde inte ansluta till servern.";
+
+            carToDelete = null;
+
+            if (errorToast != null)
+            {
+                _ = errorToast.ShowAsync();
+            }
         }
     }
 
@@ -657,5 +698,10 @@ private void SelectFuelType(string type)
         public bool Success { get; set; }
 
         public Car? Car { get; set; }
+    }
+
+    private class ErrorResponse
+    {
+        public string Error { get; set; } = "";
     }
 }

@@ -10,7 +10,6 @@
 
 <div class="fuel-history-page">
 
-    <BackButton />
 
     <!-- Header -->
     <header class="fuel-page-header">
@@ -302,6 +301,12 @@
                             <h3>
                                 @displayCarName
                             </h3>
+                            @if (!string.IsNullOrWhiteSpace(entry.MemberName))
+                            {
+                                <span class="fuel-history-member">
+                                    Tankat av @entry.MemberName
+                                </span>
+                            }
 
                         </div>
 
@@ -387,10 +392,23 @@
 
 </div>
 
+<SuccessToast @ref="deleteSuccessToast"
+              Message="Tankningen är borttagen"
+              Description="Tankningen har tagits bort från historiken."
+              Variant="danger" />
+
+<SuccessToast @ref="deleteErrorToast"
+              Message="Kunde inte ta bort tankningen"
+              Description="@deleteErrorMessage"
+              Variant="danger" />
+
 @code {
 
     private List<Car> cars = new();
     private List<FuelEntry> fuelEntries = new();
+    private SuccessToast? deleteSuccessToast;
+    private SuccessToast? deleteErrorToast;
+    private string deleteErrorMessage = "";
 
     private string? groupToken;
 
@@ -577,14 +595,79 @@ private void SelectHistoryCar(Guid carId)
 
     private async Task DeleteFuelEntry(FuelEntry entry)
     {
-        fuelEntries.RemoveAll(
-            e => e.Id == entry.Id);
+        deleteErrorMessage = "";
 
-        await Storage.SaveAsync(
-            "fuelEntries",
-            fuelEntries);
+        if (string.IsNullOrWhiteSpace(groupToken))
+        {
+            fuelEntries.RemoveAll(
+                e => e.Id == entry.Id);
 
-        entryToDelete = null;
+            await Storage.SaveAsync(
+                "fuelEntries",
+                fuelEntries);
+
+            entryToDelete = null;
+
+            if (deleteSuccessToast != null)
+            {
+                _ = deleteSuccessToast.ShowAsync();
+            }
+
+            return;
+        }
+
+        try
+        {
+            using var request =
+                new HttpRequestMessage(
+                    HttpMethod.Delete,
+                    $"api/fuel-entries?id={entry.Id}");
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            var response =
+                await Http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                deleteErrorMessage =
+                    "Kunde inte ta bort tankningen.";
+
+                entryToDelete = null;
+
+                if (deleteErrorToast != null)
+                {
+                    _ = deleteErrorToast.ShowAsync();
+                }
+
+                return;
+            }
+
+            fuelEntries.RemoveAll(
+                e => e.Id == entry.Id);
+
+            entryToDelete = null;
+
+            if (deleteSuccessToast != null)
+            {
+                _ = deleteSuccessToast.ShowAsync();
+            }
+        }
+        catch
+        {
+            deleteErrorMessage =
+                "Kunde inte ansluta till servern.";
+
+            entryToDelete = null;
+
+            if (deleteErrorToast != null)
+            {
+                _ = deleteErrorToast.ShowAsync();
+            }
+        }
     }
 
     private class CarsResponse

@@ -1,7 +1,9 @@
 ﻿@if (isVisible)
 {
-    <div class="fuel-toast-success @(isLeaving ? "fuel-toast-leaving" : "")">
-        <div class="fuel-toast-icon">✓</div>
+    <div class="fuel-toast-success @(Variant == "danger" ? "fuel-toast-danger" : "") @(isLeaving ? "fuel-toast-leaving" : "")">
+        <div class="fuel-toast-icon">
+            @(Variant == "danger" ? "×" : "✓")
+        </div>
 
         <div class="fuel-toast-content">
             <strong>@Message</strong>
@@ -20,6 +22,9 @@
 
     [Parameter]
     public string Description { get; set; } = "";
+
+    [Parameter]
+    public string Variant { get; set; } = "success";
 
     [Parameter]
     public int Duration { get; set; } = 3000;
