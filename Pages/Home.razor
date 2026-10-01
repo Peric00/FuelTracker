@@ -4,6 +4,7 @@
 @using System.Globalization
 @inject StorageService Storage
 @inject NavigationManager Navigation
+@inject HttpClient Http
 
 <PageTitle>FuelTracker</PageTitle>
 
@@ -456,16 +457,74 @@
 
         isInGroup =
             !string.IsNullOrWhiteSpace(groupToken);
+
+        // Om användaren är med i en grupp
+        // hämtar vi gruppens aktuella data från servern.
+        if (isInGroup)
+        {
+            try
+            {
+                // Hämta gruppens bilar
+                using var carsRequest =
+                    new HttpRequestMessage(
+                        HttpMethod.Get,
+                        "api/cars");
+
+                carsRequest.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer",
+                        groupToken);
+
+                var carsResponse =
+                    await Http.SendAsync(carsRequest);
+
+                if (carsResponse.IsSuccessStatusCode)
+                {
+                    var carsResult =
+                        await carsResponse.Content
+                            .ReadFromJsonAsync<CarsResponse>();
+
+                    cars =
+                        carsResult?.Cars
+                        ?? new List<Car>();
+                }
+
+                // Hämta gruppens tankningar
+                using var fuelRequest =
+                    new HttpRequestMessage(
+                        HttpMethod.Get,
+                        "api/fuel-entries");
+
+                fuelRequest.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer",
+                        groupToken);
+
+                var fuelResponse =
+                    await Http.SendAsync(fuelRequest);
+
+                if (fuelResponse.IsSuccessStatusCode)
+                {
+                    var fuelResult =
+                        await fuelResponse.Content
+                            .ReadFromJsonAsync<FuelEntriesResponse>();
+
+                    fuelEntries =
+                        fuelResult?.FuelEntries
+                        ?? new List<FuelEntry>();
+                }
+            }
+            catch
+            {
+                // Om servern inte kan nås behåller vi
+                // den lokala datan istället för att krascha sidan.
+            }
+        }
     }
 
     private void AskToDelete(FuelEntry entry)
     {
         entryToDelete = entry.Id;
-    }
-
-    private void CancelDelete()
-    {
-        entryToDelete = null;
     }
 
     private async Task DeleteFuelEntry(FuelEntry entry)
@@ -477,6 +536,11 @@
             "fuelEntries",
             fuelEntries);
 
+        entryToDelete = null;
+    }
+
+    private void CancelDelete()
+    {
         entryToDelete = null;
     }
 
@@ -509,5 +573,19 @@
     {
         showSettings = false;
         Navigation.NavigateTo("/backup");
+    }
+
+    private class CarsResponse
+    {
+        public bool Success { get; set; }
+
+        public List<Car> Cars { get; set; } = new();
+    }
+
+    private class FuelEntriesResponse
+    {
+        public bool Success { get; set; }
+
+        public List<FuelEntry> FuelEntries { get; set; } = new();
     }
 }
