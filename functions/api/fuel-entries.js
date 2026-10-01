@@ -29,11 +29,11 @@ export async function onRequestGet(context) {
                     FuelEntries.TotalCost,
                     FuelEntries.Date,
                     FuelEntries.CreatedAt,
-                    Cars.Name AS CarName,
+                    COALESCE(FuelEntries.CarName, Cars.Name) AS CarName,
                     Members.Name AS MemberName
                 FROM FuelEntries
-                INNER JOIN Cars
-                    ON Cars.Id = FuelEntries.CarId
+                LEFT JOIN Cars
+    ON Cars.Id = FuelEntries.CarId
                 INNER JOIN Members
                     ON Members.Id = FuelEntries.MemberId
                 WHERE FuelEntries.GroupId = ?
@@ -166,22 +166,24 @@ export async function onRequestPost(context) {
         await context.env.DB
             .prepare(`
                 INSERT INTO FuelEntries
-                (
-                    Id,
-                    GroupId,
-                    CarId,
-                    MemberId,
-                    Liters,
-                    TotalCost,
-                    Date,
-                    CreatedAt
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+(
+    Id,
+    GroupId,
+    CarId,
+    CarName,
+    MemberId,
+    Liters,
+    TotalCost,
+    Date,
+    CreatedAt
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             `)
             .bind(
                 fuelEntryId,
                 auth.groupId,
                 car.Id,
+car.Name,
                 auth.memberId,
                 liters,
                 totalCost,
