@@ -57,7 +57,17 @@
                 Dela den 6-siffriga koden med andra
                 så att de kan gå med i gruppen.
             </p>
+            <button class="group-option-card group-create"
+                    @onclick="LeaveGroup">
+                <div class="group-option-icon">←</div>
 
+                <div class="group-option-text">
+                    <strong>Lämna grupp</strong>
+                    <span>Ta bort dig själv från gruppen.</span>
+                </div>
+
+                <div class="group-option-arrow">›</div>
+            </button>
         </div>
     }
     else
@@ -396,6 +406,8 @@
                 _ = successToast.ShowAsync();
             }
         }
+
+
         catch
         {
             errorMessage =
@@ -407,6 +419,64 @@
         }
     }
 
+    private async Task LeaveGroup()
+    {
+        errorMessage = "";
+
+        try
+        {
+            var token =
+                await Storage.LoadAsync<string>("groupToken");
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return;
+            }
+
+            using var request =
+                new HttpRequestMessage(
+                    HttpMethod.Post,
+                    "api/groups-leave");
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    token);
+
+            var response =
+                await Http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorMessage =
+                    "Kunde inte lämna gruppen.";
+
+                return;
+            }
+
+            await Storage.SaveAsync<string?>(
+                "groupToken",
+                null);
+
+            currentGroup = null;
+            currentMember = null;
+            mode = null;
+
+            if (successToast != null)
+            {
+                successToast.Message = "Du har lämnat gruppen!";
+                successToast.Description =
+                    "Du kan nu skapa eller gå med i en annan grupp.";
+
+                _ = successToast.ShowAsync();
+            }
+        }
+        catch
+        {
+            errorMessage =
+                "Kunde inte ansluta till servern.";
+        }
+    }
     private class GroupResponse
     {
         public bool Success { get; set; }
