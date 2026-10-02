@@ -3,6 +3,7 @@
 @using FuelTracker.Services
 @inject HttpClient Http
 @inject StorageService Storage
+@using FuelTracker.Models
 
 <PageTitle>Grupp - FuelTracker</PageTitle>
 
@@ -227,6 +228,41 @@
 
 </div>
 
+@if (showImportPrompt)
+{
+    <div class="fuel-import-overlay">
+        <div class="fuel-import-modal">
+
+            <div class="fuel-import-icon">↗</div>
+
+            <h2>Flytta din sparade data?</h2>
+
+            <p>
+                Du har
+                <strong>@localCarsToImport.Count bil(ar)</strong>
+                och
+                <strong>@localFuelEntriesToImport.Count tankning(ar)</strong>
+                sparade på den här enheten.
+            </p>
+
+            <p>
+                Vill du flytta dem till gruppen så att alla i gruppen kan se dem?
+            </p>
+
+            <button class="fuel-import-primary"
+                    @onclick="ImportLocalData">
+                Ja, flytta till gruppen
+            </button>
+
+            <button class="fuel-import-secondary"
+                    @onclick="SkipImport">
+                Nej, behåll dem på enheten
+            </button>
+
+        </div>
+    </div>
+}
+
 
 @code {
     private string? mode;
@@ -234,6 +270,10 @@
     private string groupName = "";
     private string memberName = "";
     private string joinCode = "";
+
+    private bool showImportPrompt = false;
+    private List<Car> localCarsToImport = new();
+    private List<FuelEntry> localFuelEntriesToImport = new();
 
     private bool isLoading = false;
     private string errorMessage = "";
@@ -303,6 +343,92 @@
         finally
         {
             isCheckingGroup = false;
+        }
+    }
+
+    private void SkipImport()
+    {
+        showImportPrompt = false;
+
+        localCarsToImport.Clear();
+        localFuelEntriesToImport.Clear();
+    }
+
+    private async Task ImportLocalData()
+    {
+        if (currentGroup == null ||
+            currentMember == null)
+        {
+            return;
+        }
+
+        var token =
+            await Storage.LoadAsync<string>("groupToken");
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            errorMessage =
+                "Kunde inte hitta gruppens token.";
+
+            showImportPrompt = false;
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = "";
+
+        try
+        {
+            var carIdMap = new Dictionary<Guid, Guid>();
+
+            foreach (var localCar in localCarsToImport)
+            {
+                using var request =
+                    new HttpRequestMessage(
+                        HttpMethod.Post,
+                        "api/cars");
+
+                request.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer",
+                        token);
+
+                request.Content =
+                    JsonContent.Create(new
+                    {
+                        name = localCar.Name,
+                        registrationNumber = localCar.RegistrationNumber,
+                        fuelType = localCar.FuelType
+                    });
+
+                var response = await Http.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(
+                        $"Kunde inte flytta bilen {localCar.Name}.");
+                }
+
+                var result =
+                    await response.Content.ReadFromJsonAsync<CarResponse>();
+
+                if (result?.Car == null)
+                {
+                    throw new Exception(
+                        $"Kunde inte läsa den nya bilen {localCar.Name}.");
+                }
+
+                carIdMap[localCar.Id] = result.Car.Id;
+            }
+        }
+        catch
+        {
+            errorMessage =
+                "Något gick fel när din sparade data skulle flyttas.";
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 
@@ -420,6 +546,18 @@
 
             currentGroup = result.Group;
             currentMember = result.Member;
+
+            localCarsToImport =
+    await Storage.LoadAsync<List<Car>>("cars")
+    ?? new List<Car>();
+
+            localFuelEntriesToImport =
+                await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
+                ?? new List<FuelEntry>();
+
+            showImportPrompt =
+                localCarsToImport.Count > 0 ||
+                localFuelEntriesToImport.Count > 0;
 
             if (!string.IsNullOrWhiteSpace(result.Token))
             {
@@ -621,5 +759,11 @@
         public bool Success { get; set; }
 
         public List<MemberInfo> Members { get; set; } = new();
+    }
+
+    private class CarResponse
+    {
+        public bool Success { get; set; }
+        public Car? Car { get; set; }
     }
 }
