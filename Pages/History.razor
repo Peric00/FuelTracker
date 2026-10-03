@@ -34,212 +34,108 @@
         </div>
 
     </header>
-
-    <!-- Månadsväljare -->
-    <section class="fuel-month-picker">
-
-        <button class="fuel-month-arrow"
-                @onclick="PreviousMonth"
-                aria-label="Föregående månad">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m15 18-6-6 6-6" />
-            </svg>
-        </button>
-
-        <div class="fuel-month-center">
-            <span>MÅNAD</span>
-
-            <strong>
-                @MonthName
-            </strong>
-        </div>
-
-        <button class="fuel-month-arrow"
-                @onclick="NextMonth"
-                aria-label="Nästa månad">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m9 18 6-6-6-6" />
-            </svg>
-        </button>
-
-    </section>
-
-    <!-- Bilfilter -->
-    @if (cars.Count > 1)
+    @if (!isInitialLoading)
     {
-        <section class="fuel-history-filter">
+        <!-- Månadsväljare -->
+        <section class="fuel-month-picker">
 
-            <div class="fuel-history-filter-label">
+            <button class="fuel-month-arrow"
+            @onclick="PreviousMonth"
+            aria-label="Föregående månad">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+            </button>
 
-                <span class="fuel-history-filter-icon">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="m5 11 1.5-4h11L19 11" />
-                        <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
-                        <circle cx="7" cy="16" r="1" />
-                        <circle cx="17" cy="16" r="1" />
-                    </svg>
-                </span>
+            <div class="fuel-month-center">
+                <span>MÅNAD</span>
 
-                <span>Visa bil</span>
-
+                <strong>
+                    @MonthName
+                </strong>
             </div>
 
-            <div class="fuel-custom-select">
-
-                <button type="button"
-                        class="fuel-history-select fuel-custom-select-button"
-                        @onclick="ToggleHistoryCarDropdown">
-
-                    <span>@SelectedHistoryCarName</span>
-
-                    <span class="fuel-custom-select-arrow @(historyCarDropdownOpen ? "open" : "")">
-                        ⌄
-                    </span>
-
-                </button>
-
-                @if (historyCarDropdownOpen)
-                {
-                    <div class="fuel-custom-select-menu">
-
-                        <button type="button"
-                                class="fuel-custom-select-option @(selectedCarId == Guid.Empty ? "selected" : "")"
-                                @onclick="() => SelectHistoryCar(Guid.Empty)">
-
-                            Alla bilar
-
-                        </button>
-
-                        @foreach (var car in cars)
-                        {
-                            <button type="button"
-                                    class="fuel-custom-select-option @(selectedCarId == car.Id ? "selected" : "")"
-                                    @onclick="() => SelectHistoryCar(car.Id)">
-
-                                @car.Name
-
-                            </button>
-                        }
-
-                    </div>
-                }
-
-            </div>
+            <button class="fuel-month-arrow"
+            @onclick="NextMonth"
+            aria-label="Nästa månad">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            </button>
 
         </section>
-    }
 
-    <!-- Statistik -->
-    <section class="fuel-history-stats">
+        <!-- Bilfilter -->
+        @if (cars.Count > 1)
+        {
+            <section class="fuel-history-filter">
 
-        <div class="fuel-history-stat fuel-history-stat-purple">
+                <div class="fuel-history-filter-label">
 
-            <div class="fuel-history-stat-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
-                    <path d="M7 6h5v5H7z" />
-                    <path d="M15 8h2l3 3v6a2 2 0 0 1-4 0" />
-                </svg>
-            </div>
+                    <span class="fuel-history-filter-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 11 1.5-4h11L19 11" />
+                            <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
+                            <circle cx="7" cy="16" r="1" />
+                            <circle cx="17" cy="16" r="1" />
+                        </svg>
+                    </span>
 
-            <span>Tankningar</span>
+                    <span>Visa bil</span>
 
-            <strong>
-                @MonthlyEntries.Count
-            </strong>
-
-            <div class="fuel-history-stat-glow"></div>
-
-        </div>
-
-        <div class="fuel-history-stat fuel-history-stat-cyan">
-
-            <div class="fuel-history-stat-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M15.5 8.5c-.8-.7-1.8-1-3-1-1.7 0-3 .8-3 2s1 1.8 3 2.2 3 1 3 2.3-1.3 2.2-3.2 2.2c-1.2 0-2.4-.4-3.3-1.2" />
-                    <path d="M12 5.5v13" />
-                </svg>
-            </div>
-
-            <span>Kostnad</span>
-
-            <strong class="fuel-history-money">
-                @TotalCost.ToString("0.00")
-                <small>kr</small>
-            </strong>
-
-            <div class="fuel-history-stat-glow"></div>
-
-        </div>
-
-        <div class="fuel-history-stat fuel-history-stat-orange">
-
-            <div class="fuel-history-stat-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" />
-                </svg>
-            </div>
-
-            <span>Liter</span>
-
-            <strong>
-                @TotalLiters.ToString("0.##")
-                <small>L</small>
-            </strong>
-
-            <div class="fuel-history-stat-glow"></div>
-
-        </div>
-
-        <div class="fuel-history-stat fuel-history-stat-lime">
-
-            <div class="fuel-history-stat-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 18 9 13l4 3 7-9" />
-                    <path d="M15 7h5v5" />
-                </svg>
-            </div>
-
-            <span>Snittpris</span>
-
-            <strong>
-                @AveragePrice.ToString("0.00")
-                <small>kr/L</small>
-            </strong>
-
-            <div class="fuel-history-stat-glow"></div>
-
-        </div>
-
-    </section>
-
-    <!-- Tankningar -->
-    <section class="fuel-history-list">
-
-        <div class="fuel-history-list-title">
-
-            <div>
-                <div class="fuel-eyebrow">
-                    TANKNINGAR
                 </div>
 
-                <h2>
-                    @MonthName
-                </h2>
-            </div>
+                <div class="fuel-custom-select">
 
-            <span class="fuel-history-count">
-                @MonthlyEntries.Count
-            </span>
+                    <button type="button"
+                    class="fuel-history-select fuel-custom-select-button"
+                    @onclick="ToggleHistoryCarDropdown">
 
-        </div>
+                        <span>@SelectedHistoryCarName</span>
 
-        @if (MonthlyEntries.Count == 0)
-        {
-            <div class="fuel-history-empty">
+                        <span class="fuel-custom-select-arrow @(historyCarDropdownOpen ? "open" : "")">
+                            ⌄
+                        </span>
 
-                <div class="fuel-history-empty-icon">
+                    </button>
+
+                    @if (historyCarDropdownOpen)
+                    {
+                        <div class="fuel-custom-select-menu">
+
+                            <button type="button"
+                            class="fuel-custom-select-option @(selectedCarId == Guid.Empty ? "selected" : "")"
+                            @onclick="() => SelectHistoryCar(Guid.Empty)">
+
+                                Alla bilar
+
+                            </button>
+
+                            @foreach (var car in cars)
+                            {
+                                <button type="button"
+                                class="fuel-custom-select-option @(selectedCarId == car.Id ? "selected" : "")"
+                                @onclick="() => SelectHistoryCar(car.Id)">
+
+                                    @car.Name
+
+                                </button>
+                            }
+
+                        </div>
+                    }
+
+                </div>
+
+            </section>
+        }
+
+        <!-- Statistik -->
+        <section class="fuel-history-stats">
+
+            <div class="fuel-history-stat fuel-history-stat-purple">
+
+                <div class="fuel-history-stat-icon">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
                         <path d="M7 6h5v5H7z" />
@@ -247,150 +143,257 @@
                     </svg>
                 </div>
 
-                <h3>Inga tankningar</h3>
+                <span>Tankningar</span>
 
-                <p>
-                    Du har inga registrerade tankningar den här månaden.
-                </p>
+                <strong>
+                    @MonthlyEntries.Count
+                </strong>
+
+                <div class="fuel-history-stat-glow"></div>
 
             </div>
-        }
-        else
-        {
-            @foreach (var entry in MonthlyEntries)
+
+            <div class="fuel-history-stat fuel-history-stat-cyan">
+
+                <div class="fuel-history-stat-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M15.5 8.5c-.8-.7-1.8-1-3-1-1.7 0-3 .8-3 2s1 1.8 3 2.2 3 1 3 2.3-1.3 2.2-3.2 2.2c-1.2 0-2.4-.4-3.3-1.2" />
+                        <path d="M12 5.5v13" />
+                    </svg>
+                </div>
+
+                <span>Kostnad</span>
+
+                <strong class="fuel-history-money">
+                    @TotalCost.ToString("0.00")
+                    <small>kr</small>
+                </strong>
+
+                <div class="fuel-history-stat-glow"></div>
+
+            </div>
+
+            <div class="fuel-history-stat fuel-history-stat-orange">
+
+                <div class="fuel-history-stat-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11Z" />
+                    </svg>
+                </div>
+
+                <span>Liter</span>
+
+                <strong>
+                    @TotalLiters.ToString("0.##")
+                    <small>L</small>
+                </strong>
+
+                <div class="fuel-history-stat-glow"></div>
+
+            </div>
+
+            <div class="fuel-history-stat fuel-history-stat-lime">
+
+                <div class="fuel-history-stat-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 18 9 13l4 3 7-9" />
+                        <path d="M15 7h5v5" />
+                    </svg>
+                </div>
+
+                <span>Snittpris</span>
+
+                <strong>
+                    @AveragePrice.ToString("0.00")
+                    <small>kr/L</small>
+                </strong>
+
+                <div class="fuel-history-stat-glow"></div>
+
+            </div>
+
+        </section>
+
+        <!-- Tankningar -->
+        <section class="fuel-history-list">
+
+            <div class="fuel-history-list-title">
+
+                <div>
+                    <div class="fuel-eyebrow">
+                        TANKNINGAR
+                    </div>
+
+                    <h2>
+                        @MonthName
+                    </h2>
+                </div>
+
+                <span class="fuel-history-count">
+                    @MonthlyEntries.Count
+                </span>
+
+            </div>
+
+            @if (MonthlyEntries.Count == 0)
             {
-                var car =
-                    cars.FirstOrDefault(c => c.Id == entry.CarId);
+                <div class="fuel-history-empty">
 
-                var displayCarName =
-                    !string.IsNullOrWhiteSpace(entry.CarName)
-                        ? entry.CarName
-                        : car?.Name ?? "Okänd bil";
-
-                <article class="fuel-history-entry">
-
-                    <div class="fuel-history-entry-accent"></div>
-
-                    <div class="fuel-history-entry-date">
-                        <span>
-                            @entry.Date.ToString(
-                                "dddd",
-                                SwedishCulture)
-                        </span>
-
-                        <strong>
-                            @entry.Date.ToString(
-                                "d MMMM",
-                                SwedishCulture)
-                        </strong>
+                    <div class="fuel-history-empty-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
+                            <path d="M7 6h5v5H7z" />
+                            <path d="M15 8h2l3 3v6a2 2 0 0 1-4 0" />
+                        </svg>
                     </div>
 
-                    <div class="fuel-history-entry-top">
+                    <h3>Inga tankningar</h3>
 
-                        <div class="fuel-history-car">
+                    <p>
+                        Du har inga registrerade tankningar den här månaden.
+                    </p>
 
-                            <div class="fuel-history-car-icon">
-                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="m5 11 1.5-4h11L19 11" />
-                                    <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
-                                    <circle cx="7" cy="16" r="1" />
-                                    <circle cx="17" cy="16" r="1" />
-                                </svg>
-                            </div>
-
-                            <h3>
-                                @displayCarName
-                            </h3>
-                            @if (!string.IsNullOrWhiteSpace(entry.MemberName))
-                            {
-                                <span class="fuel-history-member">
-                                    Tankat av @entry.MemberName
-                                </span>
-                            }
-
-                        </div>
-
-                        <div class="fuel-history-price">
-                            @entry.PricePerLiter.ToString("0.00")
-                            <small>kr/L</small>
-                        </div>
-
-                    </div>
-
-                    <div class="fuel-history-entry-values">
-
-                        <div>
-                            <span>Liter</span>
-
-                            <strong>
-                                @entry.Liters.ToString("0.##")
-                                <small>L</small>
-                            </strong>
-                        </div>
-
-                        <div class="fuel-history-value-divider"></div>
-
-                        <div>
-                            <span>Kostnad</span>
-
-                            <strong>
-                                @entry.TotalCost.ToString("0.00")
-                                <small>kr</small>
-                            </strong>
-                        </div>
-
-                    </div>
-
-                    @if (entryToDelete == entry.Id)
-                    {
-                        <div class="fuel-delete-confirm">
-
-                            <strong>
-                                Ta bort tankningen?
-                            </strong>
-
-                            <p>
-                                Tankningen tas bort permanent och månadens statistik räknas om.
-                            </p>
-
-                            <div class="fuel-confirm-actions">
-
-                                <button class="fuel-danger-button"
-                                        @onclick="() => DeleteFuelEntry(entry)">
-                                    Ja, ta bort
-                                </button>
-
-                                <button class="fuel-cancel-button"
-                                        @onclick="CancelDelete">
-                                    Avbryt
-                                </button>
-
-                            </div>
-
-                        </div>
-                    }
-                    else
-                    {
-                        <button class="fuel-delete-link"
-                                @onclick="() => AskToDelete(entry)">
-
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M4 7h16" />
-                                <path d="m9 7 1-3h4l1 3" />
-                                <path d="M7 7l1 13h8l1-13" />
-                            </svg>
-
-                            Ta bort tankning
-                        </button>
-                    }
-
-                </article>
+                </div>
             }
-        }
+            else
+            {
+                @foreach (var entry in MonthlyEntries)
+                {
+                    var car =
+                        cars.FirstOrDefault(c => c.Id == entry.CarId);
 
-    </section>
+                    var displayCarName =
+                        !string.IsNullOrWhiteSpace(entry.CarName)
+                            ? entry.CarName
+                            : car?.Name ?? "Okänd bil";
 
+                    <article class="fuel-history-entry">
+
+                        <div class="fuel-history-entry-accent"></div>
+
+                        <div class="fuel-history-entry-date">
+                            <span>
+                                @entry.Date.ToString(
+                                                                                                                                                        "dddd",
+                                                                                                                                                        SwedishCulture)
+                            </span>
+
+                            <strong>
+                                @entry.Date.ToString(
+                                                                                                                                                        "d MMMM",
+                                                                                                                                                        SwedishCulture)
+                            </strong>
+                        </div>
+
+                        <div class="fuel-history-entry-top">
+
+                            <div class="fuel-history-car">
+
+                                <div class="fuel-history-car-icon">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="m5 11 1.5-4h11L19 11" />
+                                        <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
+                                        <circle cx="7" cy="16" r="1" />
+                                        <circle cx="17" cy="16" r="1" />
+                                    </svg>
+                                </div>
+
+                                <h3>
+                                    @displayCarName
+                                </h3>
+                                @if (!string.IsNullOrWhiteSpace(entry.MemberName))
+                                {
+                                    <span class="fuel-history-member">
+                                        Tankat av @entry.MemberName
+                                    </span>
+                                }
+
+                            </div>
+
+                            <div class="fuel-history-price">
+                                @entry.PricePerLiter.ToString("0.00")
+                                <small>kr/L</small>
+                            </div>
+
+                        </div>
+
+                        <div class="fuel-history-entry-values">
+
+                            <div>
+                                <span>Liter</span>
+
+                                <strong>
+                                    @entry.Liters.ToString("0.##")
+                                    <small>L</small>
+                                </strong>
+                            </div>
+
+                            <div class="fuel-history-value-divider"></div>
+
+                            <div>
+                                <span>Kostnad</span>
+
+                                <strong>
+                                    @entry.TotalCost.ToString("0.00")
+                                    <small>kr</small>
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        @if (entryToDelete == entry.Id)
+                        {
+                            <div class="fuel-delete-confirm">
+
+                                <strong>
+                                    Ta bort tankningen?
+                                </strong>
+
+                                <p>
+                                    Tankningen tas bort permanent och månadens statistik räknas om.
+                                </p>
+
+                                <div class="fuel-confirm-actions">
+
+                                    <button class="fuel-danger-button"
+                                    @onclick="() => DeleteFuelEntry(entry)">
+                                        Ja, ta bort
+                                    </button>
+
+                                    <button class="fuel-cancel-button"
+                                    @onclick="CancelDelete">
+                                        Avbryt
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <button class="fuel-delete-link"
+                            @onclick="() => AskToDelete(entry)">
+
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M4 7h16" />
+                                    <path d="m9 7 1-3h4l1 3" />
+                                    <path d="M7 7l1 13h8l1-13" />
+                                </svg>
+
+                                Ta bort tankning
+                            </button>
+                        }
+
+                    </article>
+                }
+            }
+
+        </section>
+    }
 </div>
+
+    
 
 <SuccessToast @ref="deleteSuccessToast"
               Message="Tankningen är borttagen"
@@ -409,6 +412,7 @@
     private SuccessToast? deleteSuccessToast;
     private SuccessToast? deleteErrorToast;
     private string deleteErrorMessage = "";
+    private bool isInitialLoading = true;
 
     private string? groupToken;
 
@@ -499,6 +503,7 @@ private void SelectHistoryCar(Guid carId)
                 await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
                 ?? new List<FuelEntry>();
 
+            isInitialLoading = false;
             return;
         }
 
@@ -565,6 +570,8 @@ private void SelectHistoryCar(Guid carId)
             cars = new List<Car>();
             fuelEntries = new List<FuelEntry>();
         }
+
+        isInitialLoading = false;
     }
 
     private void PreviousMonth()

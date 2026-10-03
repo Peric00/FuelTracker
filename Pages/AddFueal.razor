@@ -35,7 +35,7 @@
 
     </header>
 
-    @if (cars.Count == 0)
+    @if (!isInitialLoading && cars.Count == 0)
     {
         <div class="fuel-form-warning">
 
@@ -53,7 +53,7 @@
 
         </div>
     }
-    else
+    else if (!isInitialLoading && cars.Count > 0)
     {
         <!-- Bil -->
         <section class="fuel-form-card">
@@ -295,6 +295,8 @@
 
     private Guid? selectedCarId;
 
+    private bool isInitialLoading = true;
+
     private decimal? liters;
     private SuccessToast? successToast;
     private decimal? totalCost;
@@ -476,6 +478,7 @@
         {
             selectedCarId = cars[0].Id;
         }
+        isInitialLoading = false;
     }
 
     private async Task SaveFuelEntry()

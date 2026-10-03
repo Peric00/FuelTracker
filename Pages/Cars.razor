@@ -9,400 +9,403 @@
 
 <div class="fuel-cars-page">
 
- 
+    @if (!isInitialLoading)
+    {
 
-    <!-- Header -->
-    <header class="fuel-page-header">
+        <!-- Header -->
+        <header class="fuel-page-header">
 
-        <div class="fuel-page-header-icon fuel-cars-header-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m5 11 1.5-4h11L19 11" />
-                <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
-                <circle cx="7" cy="16" r="1" />
-                <circle cx="17" cy="16" r="1" />
-            </svg>
-        </div>
-
-        <div>
-            <div class="fuel-eyebrow">
-                GARAGE
-            </div>
-
-            <h1>Mina bilar</h1>
-
-            <p>
-                Hantera dina fordon.
-            </p>
-        </div>
-
-    </header>
-
-
-    <!-- LÄGG TILL BIL -->
-    <section class="fuel-car-form">
-
-        <div class="fuel-car-form-heading">
-
-            <div>
-                <div class="fuel-eyebrow">
-                    NYTT FORDON
-                </div>
-
-                <h2>Lägg till bil</h2>
-            </div>
-
-            <div class="fuel-car-form-plus">
-                +
-            </div>
-
-        </div>
-
-
-        <!-- Bilens namn -->
-        <div class="fuel-car-field">
-
-            <label>
-
-                <span class="fuel-car-field-icon fuel-car-purple">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="m5 11 1.5-4h11L19 11" />
-                        <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
-                        <circle cx="7" cy="16" r="1" />
-                        <circle cx="17" cy="16" r="1" />
-                    </svg>
-                </span>
-
-                <span>
-                    Bilens namn
-                    <small>T.ex. Volvo V70</small>
-                </span>
-
-            </label>
-
-            <div class="fuel-car-input-wrapper">
-
-                <input class="fuel-car-input"
-                       @bind="carName"
-                       placeholder="Volvo V70" />
-
-            </div>
-
-        </div>
-
-
-        <!-- Registreringsnummer -->
-        <div class="fuel-car-field">
-
-            <label>
-
-                <span class="fuel-car-field-icon fuel-car-cyan">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <rect x="3" y="6" width="18" height="12" rx="2" />
-                        <path d="M7 10h10" />
-                        <path d="M7 14h6" />
-                    </svg>
-                </span>
-
-                <span>
-                    Registreringsnummer
-                    <small>T.ex. ABC123</small>
-                </span>
-
-            </label>
-
-            <div class="fuel-car-input-wrapper">
-
-                <input class="fuel-car-input fuel-registration-input"
-                       @bind="registrationNumber"
-                       placeholder="ABC123"
-                       maxlength="10" />
-
-            </div>
-
-        </div>
-
-
-        <!-- Bränsle -->
-        <div class="fuel-car-field fuel-car-field-last">
-
-            <label>
-
-                <span class="fuel-car-field-icon fuel-car-orange">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
-                        <path d="M7 6h5v5H7z" />
-                        <path d="M15 8h2l3 3v6a2 2 0 0 1-4 0" />
-                    </svg>
-                </span>
-
-                <span>
-                    Bränsletyp
-                    <small>Vad kör bilen på?</small>
-                </span>
-
-            </label>
-
-            <div class="fuel-custom-select">
-
-                <button type="button"
-                        class="fuel-car-input fuel-custom-select-button"
-                        @onclick="ToggleFuelTypeDropdown">
-
-                    <span>@FuelTypeDisplayName</span>
-
-                    <span class="fuel-custom-select-arrow @(fuelTypeDropdownOpen ? "open" : "")">
-                        ⌄
-                    </span>
-
-                </button>
-
-                @if (fuelTypeDropdownOpen)
-                {
-                    <div class="fuel-custom-select-menu">
-
-                        <button type="button"
-                                class="fuel-custom-select-option"
-                                @onclick='() => SelectFuelType("")'>
-                            Välj bränsletyp
-                        </button>
-
-                        <button type="button"
-                                class="fuel-custom-select-option @(fuelType == "Bensin" ? "selected" : "")"
-                                @onclick='() => SelectFuelType("Bensin")'>
-                            Bensin
-                        </button>
-
-                        <button type="button"
-                                class="fuel-custom-select-option @(fuelType == "Diesel" ? "selected" : "")"
-                                @onclick='() => SelectFuelType("Diesel")'>
-                            Diesel
-                        </button>
-
-                        <button type="button"
-                                class="fuel-custom-select-option @(fuelType == "E85" ? "selected" : "")"
-                                @onclick='() => SelectFuelType("E85")'>
-                            E85
-                        </button>
-
-                        <button type="button"
-                                class="fuel-custom-select-option @(fuelType == "EL" ? "selected" : "")"
-                                @onclick='() => SelectFuelType("EL")'>
-                            EL
-                        </button>
-
-                        <button type="button"
-                                class="fuel-custom-select-option @(fuelType == "Hybrid" ? "selected" : "")"
-                                @onclick='() => SelectFuelType("Hybrid")'>
-                            Hybrid
-                        </button>
-
-                    </div>
-                }
-
-            </div>
-
-        </div>
-
-
-        @if (!string.IsNullOrWhiteSpace(errorMessage))
-        {
-            <div class="fuel-car-error">
-                @errorMessage
-            </div>
-        }
-
-
-        <button class="fuel-add-car-button"
-                @onclick="AddCar">
-
-            <span class="fuel-add-car-icon">
+            <div class="fuel-page-header-icon fuel-cars-header-icon">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="m5 11 1.5-4h11L19 11" />
                     <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
                     <circle cx="7" cy="16" r="1" />
                     <circle cx="17" cy="16" r="1" />
                 </svg>
-            </span>
-
-            <span>
-                Lägg till bil
-            </span>
-
-            <span class="fuel-add-car-plus">
-                +
-            </span>
-
-        </button>
-
-    </section>
-
-
-    <!-- DINA BILAR -->
-    <section class="fuel-car-list">
-
-        <div class="fuel-car-list-heading">
+            </div>
 
             <div>
                 <div class="fuel-eyebrow">
-                    DITT GARAGE
+                    GARAGE
                 </div>
 
-                <h2>Dina bilar</h2>
+                <h1>Mina bilar</h1>
+
+                <p>
+                    Hantera dina fordon.
+                </p>
             </div>
 
-            <span class="fuel-car-count">
-                @cars.Count
-            </span>
-
-        </div>
+        </header>
 
 
-        @if (cars.Count == 0)
-        {
-            <div class="fuel-cars-empty">
+        <!-- LÄGG TILL BIL -->
+        <section class="fuel-car-form">
 
-                <div class="fuel-cars-empty-icon">
+            <div class="fuel-car-form-heading">
+
+                <div>
+                    <div class="fuel-eyebrow">
+                        NYTT FORDON
+                    </div>
+
+                    <h2>Lägg till bil</h2>
+                </div>
+
+                <div class="fuel-car-form-plus">
+                    +
+                </div>
+
+            </div>
+
+
+            <!-- Bilens namn -->
+            <div class="fuel-car-field">
+
+                <label>
+
+                    <span class="fuel-car-field-icon fuel-car-purple">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 11 1.5-4h11L19 11" />
+                            <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
+                            <circle cx="7" cy="16" r="1" />
+                            <circle cx="17" cy="16" r="1" />
+                        </svg>
+                    </span>
+
+                    <span>
+                        Bilens namn
+                        <small>T.ex. Volvo V70</small>
+                    </span>
+
+                </label>
+
+                <div class="fuel-car-input-wrapper">
+
+                    <input class="fuel-car-input"
+                    @bind="carName"
+                    placeholder="Volvo V70" />
+
+                </div>
+
+            </div>
+
+
+            <!-- Registreringsnummer -->
+            <div class="fuel-car-field">
+
+                <label>
+
+                    <span class="fuel-car-field-icon fuel-car-cyan">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="6" width="18" height="12" rx="2" />
+                            <path d="M7 10h10" />
+                            <path d="M7 14h6" />
+                        </svg>
+                    </span>
+
+                    <span>
+                        Registreringsnummer
+                        <small>T.ex. ABC123</small>
+                    </span>
+
+                </label>
+
+                <div class="fuel-car-input-wrapper">
+
+                    <input class="fuel-car-input fuel-registration-input"
+                    @bind="registrationNumber"
+                    placeholder="ABC123"
+                    maxlength="10" />
+
+                </div>
+
+            </div>
+
+
+            <!-- Bränsle -->
+            <div class="fuel-car-field fuel-car-field-last">
+
+                <label>
+
+                    <span class="fuel-car-field-icon fuel-car-orange">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6 3h9v18H4V5a2 2 0 0 1 2-2Z" />
+                            <path d="M7 6h5v5H7z" />
+                            <path d="M15 8h2l3 3v6a2 2 0 0 1-4 0" />
+                        </svg>
+                    </span>
+
+                    <span>
+                        Bränsletyp
+                        <small>Vad kör bilen på?</small>
+                    </span>
+
+                </label>
+
+                <div class="fuel-custom-select">
+
+                    <button type="button"
+                    class="fuel-car-input fuel-custom-select-button"
+                    @onclick="ToggleFuelTypeDropdown">
+
+                        <span>@FuelTypeDisplayName</span>
+
+                        <span class="fuel-custom-select-arrow @(fuelTypeDropdownOpen ? "open" : "")">
+                            ⌄
+                        </span>
+
+                    </button>
+
+                    @if (fuelTypeDropdownOpen)
+                    {
+                        <div class="fuel-custom-select-menu">
+
+                            <button type="button"
+                            class="fuel-custom-select-option"
+                            @onclick='() => SelectFuelType("")'>
+                                Välj bränsletyp
+                            </button>
+
+                            <button type="button"
+                            class="fuel-custom-select-option @(fuelType == "Bensin" ? "selected" : "")"
+                            @onclick='() => SelectFuelType("Bensin")'>
+                                Bensin
+                            </button>
+
+                            <button type="button"
+                            class="fuel-custom-select-option @(fuelType == "Diesel" ? "selected" : "")"
+                            @onclick='() => SelectFuelType("Diesel")'>
+                                Diesel
+                            </button>
+
+                            <button type="button"
+                            class="fuel-custom-select-option @(fuelType == "E85" ? "selected" : "")"
+                            @onclick='() => SelectFuelType("E85")'>
+                                E85
+                            </button>
+
+                            <button type="button"
+                            class="fuel-custom-select-option @(fuelType == "EL" ? "selected" : "")"
+                            @onclick='() => SelectFuelType("EL")'>
+                                EL
+                            </button>
+
+                            <button type="button"
+                            class="fuel-custom-select-option @(fuelType == "Hybrid" ? "selected" : "")"
+                            @onclick='() => SelectFuelType("Hybrid")'>
+                                Hybrid
+                            </button>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+
+            @if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                <div class="fuel-car-error">
+                    @errorMessage
+                </div>
+            }
+
+
+            <button class="fuel-add-car-button"
+            @onclick="AddCar">
+
+                <span class="fuel-add-car-icon">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d="m5 11 1.5-4h11L19 11" />
                         <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
                         <circle cx="7" cy="16" r="1" />
                         <circle cx="17" cy="16" r="1" />
                     </svg>
+                </span>
+
+                <span>
+                    Lägg till bil
+                </span>
+
+                <span class="fuel-add-car-plus">
+                    +
+                </span>
+
+            </button>
+
+        </section>
+
+
+        <!-- DINA BILAR -->
+        <section class="fuel-car-list">
+
+            <div class="fuel-car-list-heading">
+
+                <div>
+                    <div class="fuel-eyebrow">
+                        DITT GARAGE
+                    </div>
+
+                    <h2>Dina bilar</h2>
                 </div>
 
-                <h3>Garaget är tomt</h3>
-
-                <p>
-                    Lägg till din första bil ovan.
-                </p>
+                <span class="fuel-car-count">
+                    @cars.Count
+                </span>
 
             </div>
-        }
-        else
-        {
-            @foreach (var car in cars)
+
+
+            @if (cars.Count == 0)
             {
-                <article class="fuel-car-card">
+                <div class="fuel-cars-empty">
 
-                    <div class="fuel-car-card-accent"></div>
-
-                    <div class="fuel-car-card-top">
-
-                        <div class="fuel-car-card-icon">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="m5 11 1.5-4h11L19 11" />
-                                <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
-                                <circle cx="7" cy="16" r="1" />
-                                <circle cx="17" cy="16" r="1" />
-                            </svg>
-                        </div>
-
-                        <div class="fuel-car-card-name">
-
-                            <span>FORDON</span>
-
-                            <h3>
-                                @car.Name
-                            </h3>
-
-                        </div>
-
+                    <div class="fuel-cars-empty-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="m5 11 1.5-4h11L19 11" />
+                            <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
+                            <circle cx="7" cy="16" r="1" />
+                            <circle cx="17" cy="16" r="1" />
+                        </svg>
                     </div>
 
+                    <h3>Garaget är tomt</h3>
 
-                    <div class="fuel-car-info">
+                    <p>
+                        Lägg till din första bil ovan.
+                    </p>
 
-                        <div class="fuel-car-info-item">
-
-                            <span>REGISTRERING</span>
-
-                            <strong class="fuel-registration-badge">
-                                @(string.IsNullOrWhiteSpace(car.RegistrationNumber)
-                                    ? "SAKNAS"
-                                    : car.RegistrationNumber)
-                            </strong>
-
-                        </div>
-
-
-                        <div class="fuel-car-info-divider"></div>
-
-
-                        <div class="fuel-car-info-item">
-
-                            <span>BRÄNSLE</span>
-
-                            <strong class="fuel-type-badge">
-                                <i></i>
-                                @car.FuelType
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    @if (carToDelete == car.Id)
-                    {
-                        <div class="fuel-car-delete-confirm">
-
-                            <div class="fuel-car-delete-warning">
-
-                                <div class="fuel-car-delete-warning-icon">
-                                    !
-                                </div>
-
-                                <div>
-                                    <strong>
-                                        Ta bort @car.Name?
-                                    </strong>
-
-                                    <p>
-                                        Bilen tas bort från Mina bilar.
-                                        Dina tidigare tankningar sparas.
-                                    </p>
-                                </div>
-
-                            </div>
-
-                            <div class="fuel-car-delete-actions">
-
-                                <button class="fuel-car-danger-button"
-                                        @onclick="() => DeleteCar(car)">
-                                    Ja, ta bort
-                                </button>
-
-                                <button class="fuel-car-cancel-button"
-                                        @onclick="CancelDelete">
-                                    Avbryt
-                                </button>
-
-                            </div>
-
-                        </div>
-                    }
-                    else
-                    {
-                        <button class="fuel-car-delete-button"
-                                @onclick="() => AskToDelete(car)">
-
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M4 7h16" />
-                                <path d="m9 7 1-3h4l1 3" />
-                                <path d="M7 7l1 13h8l1-13" />
-                            </svg>
-
-                            Ta bort bil
-
-                        </button>
-                    }
-
-                </article>
+                </div>
             }
-        }
+            else
+            {
+                @foreach (var car in cars)
+                {
+                    <article class="fuel-car-card">
 
-    </section>
+                        <div class="fuel-car-card-accent"></div>
 
+                        <div class="fuel-car-card-top">
+
+                            <div class="fuel-car-card-icon">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="m5 11 1.5-4h11L19 11" />
+                                    <path d="M3 13a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5H3z" />
+                                    <circle cx="7" cy="16" r="1" />
+                                    <circle cx="17" cy="16" r="1" />
+                                </svg>
+                            </div>
+
+                            <div class="fuel-car-card-name">
+
+                                <span>FORDON</span>
+
+                                <h3>
+                                    @car.Name
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="fuel-car-info">
+
+                            <div class="fuel-car-info-item">
+
+                                <span>REGISTRERING</span>
+
+                                <strong class="fuel-registration-badge">
+                                    @(
+                                                            string.IsNullOrWhiteSpace(car.RegistrationNumber)
+                                                                                                ? "SAKNAS"
+                                                                                                : car.RegistrationNumber
+                                                )
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="fuel-car-info-divider"></div>
+
+
+                                        <div class="fuel-car-info-item">
+
+                                            <span>BRÄNSLE</span>
+
+                                            <strong class="fuel-type-badge">
+                                                <i></i>
+                                                @car.FuelType
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    @if (carToDelete == car.Id)
+                        {
+                            <div class="fuel-car-delete-confirm">
+
+                                <div class="fuel-car-delete-warning">
+
+                                    <div class="fuel-car-delete-warning-icon">
+                                        !
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            Ta bort @car.Name?
+                                        </strong>
+
+                                        <p>
+                                            Bilen tas bort från Mina bilar.
+                                            Dina tidigare tankningar sparas.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div class="fuel-car-delete-actions">
+
+                                    <button class="fuel-car-danger-button"
+                                    @onclick="() => DeleteCar(car)">
+                                        Ja, ta bort
+                                    </button>
+
+                                    <button class="fuel-car-cancel-button"
+                                    @onclick="CancelDelete">
+                                        Avbryt
+                                    </button>
+
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <button class="fuel-car-delete-button"
+                            @onclick="() => AskToDelete(car)">
+
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M4 7h16" />
+                                    <path d="m9 7 1-3h4l1 3" />
+                                    <path d="M7 7l1 13h8l1-13" />
+                                </svg>
+
+                                Ta bort bil
+
+                            </button>
+                        }
+
+                    </article>
+                }
+            }
+
+        </section>
+    }
 </div>
 
 <SuccessToast @ref="successToast"
@@ -422,6 +425,8 @@
 @code {
 
     private List<Car> cars = new();
+
+    private bool isInitialLoading = true;
 
     private string carName = "";
     private string registrationNumber = "";
@@ -466,6 +471,7 @@ private void SelectFuelType(string type)
                 await Storage.LoadAsync<List<Car>>("cars")
                 ?? new List<Car>();
 
+            isInitialLoading = false;
             return;
         }
 
@@ -504,6 +510,7 @@ private void SelectFuelType(string type)
             errorMessage =
                 "Kunde inte ansluta till servern.";
         }
+        isInitialLoading = false;
     }
 
 
