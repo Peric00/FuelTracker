@@ -168,7 +168,6 @@ code {
    ========================= */
 
 @media (max-width: 767px) {
-
     .app-content {
         padding: 1rem;
         padding-bottom: 6rem;
@@ -177,10 +176,6 @@ code {
     .home-page,
     .fuel-history {
         width: 100%;
-    }
-
-    .home-page {
-        padding-top: max(24px, env(safe-area-inset-top));
     }
 }
 
