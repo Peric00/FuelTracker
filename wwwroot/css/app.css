@@ -185,10 +185,16 @@ code {
 
 .home-page,
 .fuel-form-page,
-.fuel-history,
+.fuel-history-page,
 .fuel-cars-page,
 .group-page {
     padding-top: max(24px, env(safe-area-inset-top));
+}
+
+@media (max-width: 767px) {
+    .group-page {
+        padding-top: max(36px, env(safe-area-inset-top));
+    }
 }
 
 
