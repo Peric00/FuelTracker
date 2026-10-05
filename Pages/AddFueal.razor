@@ -3,6 +3,7 @@
 @using FuelTracker.Services
 @inject StorageService Storage
 @inject HttpClient Http
+@inject FuelDataService FuelData
 
 <PageTitle>Ny tankning</PageTitle>
 
@@ -390,6 +391,7 @@
         groupToken =
             await Storage.LoadAsync<string>("groupToken");
 
+        // Ingen grupp = använd lokal data som tidigare.
         if (string.IsNullOrWhiteSpace(groupToken))
         {
             cars =
@@ -400,30 +402,38 @@
                 await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
                 ?? new List<FuelEntry>();
         }
+        // Gruppdata finns redan i minnet.
+        else if (FuelData.IsLoaded)
+        {
+            cars = FuelData.Cars;
+            fuelEntries = FuelData.FuelEntries;
+        }
+        // Ingen cache ännu = hämta från Cloudflare.
         else
         {
             try
             {
-                using var request =
+                using var carRequest =
                     new HttpRequestMessage(
                         HttpMethod.Get,
                         "api/cars");
 
-                request.Headers.Authorization =
+                carRequest.Headers.Authorization =
                     new System.Net.Http.Headers.AuthenticationHeaderValue(
                         "Bearer",
                         groupToken);
 
-                var response =
-                    await Http.SendAsync(request);
+                var carResponse =
+                    await Http.SendAsync(carRequest);
 
-                if (response.IsSuccessStatusCode)
+                if (carResponse.IsSuccessStatusCode)
                 {
-                    var result =
-                        await response.Content.ReadFromJsonAsync<CarsResponse>();
+                    var carResult =
+                        await carResponse.Content
+                            .ReadFromJsonAsync<CarsResponse>();
 
                     cars =
-                        result?.Cars
+                        carResult?.Cars
                         ?? new List<Car>();
                 }
                 else
@@ -433,44 +443,48 @@
                     errorMessage =
                         "Kunde inte hämta gruppens bilar.";
                 }
+
+                using var fuelRequest =
+                    new HttpRequestMessage(
+                        HttpMethod.Get,
+                        "api/fuel-entries");
+
+                fuelRequest.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer",
+                        groupToken);
+
+                var fuelResponse =
+                    await Http.SendAsync(fuelRequest);
+
+                if (fuelResponse.IsSuccessStatusCode)
+                {
+                    var fuelResult =
+                        await fuelResponse.Content
+                            .ReadFromJsonAsync<FuelEntriesResponse>();
+
+                    fuelEntries =
+                        fuelResult?.FuelEntries
+                        ?? new List<FuelEntry>();
+                }
+                else
+                {
+                    fuelEntries = new List<FuelEntry>();
+
+                    errorMessage =
+                        "Kunde inte hämta gruppens tankningar.";
+                }
+
+                // Spara båda listorna gemensamt.
+                FuelData.SetData(cars, fuelEntries);
             }
             catch
             {
                 cars = new List<Car>();
-
-                errorMessage =
-                    "Kunde inte ansluta till servern.";
-            }
-
-            // Gruppens tankningar hämtas senare från /api/fuel-entries.
-            using var fuelRequest =
-    new HttpRequestMessage(
-        HttpMethod.Get,
-        "api/fuel-entries");
-
-            fuelRequest.Headers.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue(
-                    "Bearer",
-                    groupToken);
-
-            var fuelResponse =
-                await Http.SendAsync(fuelRequest);
-
-            if (fuelResponse.IsSuccessStatusCode)
-            {
-                var fuelResult =
-                    await fuelResponse.Content.ReadFromJsonAsync<FuelEntriesResponse>();
-
-                fuelEntries =
-                    fuelResult?.FuelEntries
-                    ?? new List<FuelEntry>();
-            }
-            else
-            {
                 fuelEntries = new List<FuelEntry>();
 
                 errorMessage =
-                    "Kunde inte hämta gruppens tankningar.";
+                    "Kunde inte ansluta till servern.";
             }
         }
 
@@ -478,6 +492,7 @@
         {
             selectedCarId = cars[0].Id;
         }
+
         isInitialLoading = false;
     }
 
@@ -546,6 +561,24 @@
 
                     return;
                 }
+
+                var result =
+                    await response.Content
+                        .ReadFromJsonAsync<FuelEntryResponse>();
+
+                if (result?.FuelEntry != null)
+                {
+                    fuelEntries.Add(result.FuelEntry);
+
+                    if (FuelData.IsLoaded &&
+                        !ReferenceEquals(
+                            fuelEntries,
+                            FuelData.FuelEntries))
+                    {
+                        FuelData.FuelEntries.Add(
+                            result.FuelEntry);
+                    }
+                }
             }
             catch
             {
@@ -598,5 +631,10 @@
         public bool Success { get; set; }
 
         public List<FuelEntry> FuelEntries { get; set; } = new();
+    }
+
+    private class FuelEntryResponse
+    {
+        public FuelEntry? FuelEntry { get; set; }
     }
 }

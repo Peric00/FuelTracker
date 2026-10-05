@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject StorageService Storage
 @using FuelTracker.Models
+@inject FuelDataService FuelData
 
 <PageTitle>Grupp - FuelTracker</PageTitle>
 
@@ -579,8 +580,6 @@
 
     private async Task CreateGroup()
     {
-
-
         errorMessage = "";
 
         if (string.IsNullOrWhiteSpace(groupName) ||
@@ -623,12 +622,15 @@
                 "groupToken",
                 result.Token);
 
+            // Den nya gruppen ska börja med en ren cache.
+            FuelData.Clear();
+
             currentGroup = result.Group;
             currentMember = result.Member;
 
             localCarsToImport =
-    await Storage.LoadAsync<List<Car>>("cars")
-    ?? new List<Car>();
+                await Storage.LoadAsync<List<Car>>("cars")
+                ?? new List<Car>();
 
             localFuelEntriesToImport =
                 await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
@@ -649,8 +651,6 @@
             {
                 _ = successToast.ShowAsync();
             }
-
-           
         }
         catch
         {
@@ -712,6 +712,10 @@
                 "groupToken",
                 result.Token);
 
+            // Säkerställ att ingen data från en tidigare grupp
+            // ligger kvar i den gemensamma cachen.
+            FuelData.Clear();
+
             currentGroup = result.Group;
             currentMember = result.Member;
 
@@ -731,8 +735,6 @@
                 _ = successToast.ShowAsync();
             }
         }
-
-
         catch
         {
             errorMessage =
@@ -782,6 +784,9 @@
             await Storage.SaveAsync<string?>(
                 "groupToken",
                 null);
+
+            // Töm gamla gruppens data ur appens minne.
+            FuelData.Clear();
 
             currentGroup = null;
             currentMember = null;

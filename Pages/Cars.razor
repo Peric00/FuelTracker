@@ -4,6 +4,7 @@
 @inject StorageService Storage
 @using System.Net.Http.Json
 @inject HttpClient Http
+@inject FuelDataService FuelData
 
 <PageTitle>Mina bilar</PageTitle>
 
@@ -475,6 +476,16 @@ private void SelectFuelType(string type)
             return;
         }
 
+        // Om gruppdatan redan finns i cachen
+        // använder vi bilarna direkt därifrån.
+        if (FuelData.IsLoaded)
+        {
+            cars = FuelData.Cars;
+
+            isInitialLoading = false;
+            return;
+        }
+
         try
         {
             using var request =
@@ -493,7 +504,8 @@ private void SelectFuelType(string type)
             if (response.IsSuccessStatusCode)
             {
                 var result =
-                    await response.Content.ReadFromJsonAsync<CarsResponse>();
+                    await response.Content
+                        .ReadFromJsonAsync<CarsResponse>();
 
                 cars =
                     result?.Cars
@@ -510,6 +522,7 @@ private void SelectFuelType(string type)
             errorMessage =
                 "Kunde inte ansluta till servern.";
         }
+
         isInitialLoading = false;
     }
 
@@ -580,7 +593,7 @@ private void SelectFuelType(string type)
 
                 deleteErrorMessage =
                     errorResult?.Error
-                    ?? "Kunde inte ta bort bilen från gruppen.";
+                    ?? "Kunde inte lägga till bilen i gruppen.";
 
                 carToDelete = null;
 
@@ -593,11 +606,19 @@ private void SelectFuelType(string type)
             }
 
             var result =
-    await response.Content.ReadFromJsonAsync<CarResponse>();
+                await response.Content.ReadFromJsonAsync<CarResponse>();
 
             if (result?.Car != null)
             {
                 cars.Add(result.Car);
+
+                // Om Cars-sidan inte redan använder samma lista
+                // lägger vi även bilen i den gemensamma cachen.
+                if (FuelData.IsLoaded &&
+                    !ReferenceEquals(cars, FuelData.Cars))
+                {
+                    FuelData.Cars.Add(result.Car);
+                }
             }
         }
 
@@ -673,7 +694,17 @@ private void SelectFuelType(string type)
 
             cars.RemoveAll(c => c.Id == car.Id);
 
+            // Om Cars-sidan inte redan använder samma lista
+            // tar vi även bort bilen från den gemensamma cachen.
+            if (FuelData.IsLoaded &&
+                !ReferenceEquals(cars, FuelData.Cars))
+            {
+                FuelData.Cars.RemoveAll(
+                    c => c.Id == car.Id);
+            }
+
             carToDelete = null;
+
             if (deleteSuccessToast != null)
             {
                 _ = deleteSuccessToast.ShowAsync();

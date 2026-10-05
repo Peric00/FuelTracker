@@ -5,7 +5,7 @@
 @inject StorageService Storage
 @using System.Net.Http.Json
 @inject HttpClient Http
-
+@inject FuelDataService FuelData
 <PageTitle>Historik</PageTitle>
 
 <div class="fuel-history-page">
@@ -507,6 +507,16 @@ private void SelectHistoryCar(Guid carId)
             return;
         }
 
+        // Om gruppdatan redan är laddad använder vi cachen.
+        if (FuelData.IsLoaded)
+        {
+            cars = FuelData.Cars;
+            fuelEntries = FuelData.FuelEntries;
+
+            isInitialLoading = false;
+            return;
+        }
+
         try
         {
             // Hämta gruppens bilar
@@ -526,7 +536,8 @@ private void SelectHistoryCar(Guid carId)
             if (carResponse.IsSuccessStatusCode)
             {
                 var carResult =
-                    await carResponse.Content.ReadFromJsonAsync<CarsResponse>();
+                    await carResponse.Content
+                        .ReadFromJsonAsync<CarsResponse>();
 
                 cars =
                     carResult?.Cars
@@ -554,7 +565,8 @@ private void SelectHistoryCar(Guid carId)
             if (fuelResponse.IsSuccessStatusCode)
             {
                 var fuelResult =
-                    await fuelResponse.Content.ReadFromJsonAsync<FuelEntriesResponse>();
+                    await fuelResponse.Content
+                        .ReadFromJsonAsync<FuelEntriesResponse>();
 
                 fuelEntries =
                     fuelResult?.FuelEntries
@@ -564,6 +576,9 @@ private void SelectHistoryCar(Guid carId)
             {
                 fuelEntries = new List<FuelEntry>();
             }
+
+            // Spara datan i den gemensamma cachen.
+            FuelData.SetData(cars, fuelEntries);
         }
         catch
         {

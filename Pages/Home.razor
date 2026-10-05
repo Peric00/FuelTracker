@@ -5,6 +5,7 @@
 @inject StorageService Storage
 @inject NavigationManager Navigation
 @inject HttpClient Http
+@inject FuelDataService FuelData
 
 <PageTitle>FuelTracker</PageTitle>
 
@@ -415,82 +416,96 @@
 
     protected override async Task OnInitializedAsync()
     {
-        cars =
-            await Storage.LoadAsync<List<Car>>("cars")
-            ?? new List<Car>();
-
-        fuelEntries =
-            await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
-            ?? new List<FuelEntry>();
-
         var groupToken =
             await Storage.LoadAsync<string>("groupToken");
 
         isInGroup =
             !string.IsNullOrWhiteSpace(groupToken);
 
-        // Om användaren är med i en grupp
-        // hämtar vi gruppens aktuella data från servern.
-        if (isInGroup)
+        // Ingen grupp = använd lokal data som tidigare.
+        if (!isInGroup)
         {
-            try
-            {
-                // Hämta gruppens bilar
-                using var carsRequest =
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "api/cars");
+            cars =
+                await Storage.LoadAsync<List<Car>>("cars")
+                ?? new List<Car>();
 
-                carsRequest.Headers.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue(
-                        "Bearer",
-                        groupToken);
+            fuelEntries =
+                await Storage.LoadAsync<List<FuelEntry>>("fuelEntries")
+                ?? new List<FuelEntry>();
 
-                var carsResponse =
-                    await Http.SendAsync(carsRequest);
-
-                if (carsResponse.IsSuccessStatusCode)
-                {
-                    var carsResult =
-                        await carsResponse.Content
-                            .ReadFromJsonAsync<CarsResponse>();
-
-                    cars =
-                        carsResult?.Cars
-                        ?? new List<Car>();
-                }
-
-                // Hämta gruppens tankningar
-                using var fuelRequest =
-                    new HttpRequestMessage(
-                        HttpMethod.Get,
-                        "api/fuel-entries");
-
-                fuelRequest.Headers.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue(
-                        "Bearer",
-                        groupToken);
-
-                var fuelResponse =
-                    await Http.SendAsync(fuelRequest);
-
-                if (fuelResponse.IsSuccessStatusCode)
-                {
-                    var fuelResult =
-                        await fuelResponse.Content
-                            .ReadFromJsonAsync<FuelEntriesResponse>();
-
-                    fuelEntries =
-                        fuelResult?.FuelEntries
-                        ?? new List<FuelEntry>();
-                }
-            }
-            catch
-            {
-                // Om servern inte kan nås behåller vi
-                // den lokala datan istället för att krascha sidan.
-            }
+            isInitialLoading = false;
+            return;
         }
+
+        // Gruppdata finns redan i minnet.
+        // Då behövs inga nya GET-anrop när vi går tillbaka till Home.
+        if (FuelData.IsLoaded)
+        {
+            cars = FuelData.Cars;
+            fuelEntries = FuelData.FuelEntries;
+
+            isInitialLoading = false;
+            return;
+        }
+
+        try
+        {
+            using var carsRequest =
+                new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "api/cars");
+
+            carsRequest.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            var carsResponse =
+                await Http.SendAsync(carsRequest);
+
+            if (carsResponse.IsSuccessStatusCode)
+            {
+                var carsResult =
+                    await carsResponse.Content
+                        .ReadFromJsonAsync<CarsResponse>();
+
+                cars =
+                    carsResult?.Cars
+                    ?? new List<Car>();
+            }
+
+            using var fuelRequest =
+                new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "api/fuel-entries");
+
+            fuelRequest.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    groupToken);
+
+            var fuelResponse =
+                await Http.SendAsync(fuelRequest);
+
+            if (fuelResponse.IsSuccessStatusCode)
+            {
+                var fuelResult =
+                    await fuelResponse.Content
+                        .ReadFromJsonAsync<FuelEntriesResponse>();
+
+                fuelEntries =
+                    fuelResult?.FuelEntries
+                    ?? new List<FuelEntry>();
+            }
+
+            // Spara resultatet gemensamt i appens minne.
+            FuelData.SetData(cars, fuelEntries);
+        }
+        catch
+        {
+            // Behåll sidan fungerande även om servern inte kan nås.
+        }
+
         isInitialLoading = false;
     }
 

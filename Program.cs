@@ -5,6 +5,7 @@ using FuelTracker.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddScoped<StorageService>();
+builder.Services.AddScoped<FuelDataService>();
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
